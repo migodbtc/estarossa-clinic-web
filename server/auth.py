@@ -1,0 +1,340 @@
+import os
+from datetime import datetime, timedelta
+import time
+
+from flask import request, jsonify
+from app import app
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    get_jwt_identity,
+    get_jwt,
+    decode_token,
+)
+
+from controller import controller
+from functools import wraps
+from flask import g
+from audit import log_audit
+
+jwt = JWTManager(app)
+
+
+def _log_auth(msg: str):
+    import time
+    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
+
+
+def store_jti(auth_id: int, jti: str, expires_at_str: str) -> int:
+    """Store a refresh token jti for `auth_id` in the `refresh_tokens` table.
+
+    This wrapper keeps refresh-token storage local to auth logic and centralizes
+    logging. It returns the created DB id.
+    """
+    _log_auth(f"STORE jti for auth_id={auth_id} jti={jti}")
+    return controller.create('refresh_tokens', {
+        'auth_id': auth_id,
+        'refresh_token': jti,
+        'expires_at': expires_at_str,
+    })
+
+
+def revoke_jti(jti: str) -> int:
+    """Revoke a refresh token by its jti. Returns number of affected rows."""
+    _log_auth(f"REVOKE jti={jti}")
+    return controller.revoke_refresh_token(jti)
+
+
+def find_by_jti(jti: str):
+    _log_auth(f"FIND jti={jti}")
+    return controller.find_one_by('refresh_tokens', 'refresh_token', jti)
+
+
+# Admin gate feature removed. Routes are no longer protected by an
+# admin-gate session flag. The old decorator was intentionally removed
+# to simplify authentication flow.
+
+
+def _hash_password(password: str) -> str:
+    # Default: werkzeug PBKDF2 hashing. To use a custom hasher, set
+    # `app.config['PASSWORD_HASHER']` to a callable that accepts a password
+    # and returns a hashed string.
+    hasher = app.config.get('PASSWORD_HASHER')
+    if callable(hasher):
+        return hasher(password)
+    return generate_password_hash(password)
+
+
+def _verify_password(pw_hash: str, password: str) -> bool:
+    # Support custom verifier via app.config['PASSWORD_VERIFY'] if provided.
+    verifier = app.config.get('PASSWORD_VERIFY')
+    if callable(verifier):
+        return bool(verifier(pw_hash, password))
+    return check_password_hash(pw_hash, password)
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload) -> bool:
+    # Only check refresh tokens against DB blocklist
+    token_type = jwt_payload.get('type')
+    jti = jwt_payload.get('jti')
+    if token_type != 'refresh' or not jti:
+        return False
+
+    # look up jti in refresh_tokens table
+    row = find_by_jti(jti)
+    if not row:
+        # token not found -> treat as revoked/invalid
+        return True
+    return bool(row.get('revoked'))
+
+
+@app.route('/auth/register', methods=['POST'])
+def register():
+    payload = request.get_json() or {}
+    email = payload.get('email')
+    password = payload.get('password')
+    role = payload.get('role', 'patient')
+
+    if not email or not password:
+        return jsonify({'error': 'email and password are required'}), 400
+    if role not in ('patient', 'doctor', 'nurse', 'admin'):
+        return jsonify({'error': 'invalid role'}), 400
+
+    existing = controller.find_one_by('auth_users', 'email', email)
+    if existing:
+        return jsonify({'error': 'user already exists'}), 400
+
+    pw_hash = _hash_password(password)
+    user_id = controller.create('auth_users', {
+        'email': email,
+        'password_hash': pw_hash,
+        'role': role,
+    })
+
+    # write audit record: self-registration -> actor is the new user
+    try:
+        new_row = controller.get_by_id('auth_users', user_id)
+        log_audit(user_id, 'auth_users', user_id, 'INSERT', None, new_row)
+    except Exception:
+        # do not fail registration if audit fails
+        try:
+            import traceback as _tb
+            print("[auth][audit] failed to write audit for new user", user_id)
+            _tb.print_exc()
+        except Exception:
+            pass
+
+    return jsonify({'id': user_id}), 201
+
+
+@app.route('/auth/login', methods=['POST'])
+def login():
+    payload = request.get_json() or {}
+    email = payload.get('email')
+    password = payload.get('password')
+
+    if not email or not password:
+        return jsonify({'error': 'email and password are required'}), 400
+
+    user = controller.find_one_by('auth_users', 'email', email)
+    if not user or not _verify_password(user['password_hash'], password):
+        return jsonify({'error': 'invalid credentials'}), 401
+
+    identity = user['auth_id']
+    additional_claims = {'role': user.get('role')}
+    access_expires = app.config.get('JWT_ACCESS_TOKEN_EXPIRES')
+    refresh_expires = app.config.get('JWT_REFRESH_TOKEN_EXPIRES')
+
+    # Flask-JWT-Extended / PyJWT expect the subject (sub) to be a string.
+    identity_str = str(identity)
+    access_token = create_access_token(identity=identity_str, additional_claims=additional_claims)
+    refresh_token = create_refresh_token(identity=identity_str)
+
+    # store the refresh token's jti in DB (do not store the raw token)
+    decoded = decode_token(refresh_token)
+    jti = decoded.get('jti')
+    expires_at = (datetime.utcnow() + refresh_expires) if refresh_expires else (datetime.utcnow() + timedelta(days=14))
+    expires_at_str = expires_at.strftime('%Y-%m-%d %H:%M:%S')
+    store_jti(identity, jti, expires_at_str)
+
+    return jsonify({
+        'access_token': access_token,
+        'refresh_token': refresh_token,
+        'token_type': 'bearer',
+    })
+
+
+@app.route('/auth/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    identity = get_jwt_identity()
+    new_access = create_access_token(identity=identity)
+    return jsonify({'access_token': new_access})
+
+
+@app.route('/auth/logout', methods=['POST'])
+@jwt_required(refresh=True)
+def logout():
+    # revoke the refresh token used for this request
+    jwt_payload = get_jwt()
+    jti = jwt_payload.get('jti')
+    if not jti:
+        return jsonify({'error': 'invalid token'}), 400
+    affected = revoke_jti(jti)
+    if affected:
+        return jsonify({'revoked': True})
+    return jsonify({'revoked': False}), 400
+
+
+# admin gate removed: session-based gate and HTML form are not used anymore.
+
+
+def roles_required(*roles):
+    """Decorator that ensures the current JWT identity belongs to a user with one of the given roles.
+
+    Use as `@roles_required('admin')` or `@roles_required('doctor','nurse')`.
+    """
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            identity = get_jwt_identity()
+            try:
+                auth_id = int(identity)
+            except Exception:
+                return jsonify({'error': 'invalid identity in token'}), 401
+
+            user = controller.get_by_id('auth_users', auth_id)
+            if not user:
+                return jsonify({'error': 'user not found'}), 401
+            if user.get('role') not in roles:
+                # Log role mismatch for debugging: current role vs required minimum roles
+                try:
+                    cur_role = user.get('role')
+                except Exception:
+                    cur_role = 'UNKNOWN'
+                print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] FORBIDDEN roles_required: user_id={auth_id} role={cur_role} required={roles}")
+                return jsonify({'error': 'forbidden'}), 403
+
+            g.current_user = user
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+
+def minimum_role_for_table_action(table: str, action: str, data: dict, item_id: int, current_user: dict) -> str:
+    """Return a short, human-readable description of the minimum role(s) required
+    to perform `action` on `table` for the given request context.
+
+    This mirrors the logic used by `authorize_table_action` but returns a
+    description instead of a boolean. The description is intended for debug
+    logging only — it's not used for enforcement.
+    """
+    role = (current_user or {}).get('role')
+    uid = (current_user or {}).get('auth_id')
+
+    # Admins always allowed
+    if role == 'admin':
+        return 'admin'
+
+    if table == 'auth_users':
+        if action == 'delete':
+            return 'admin'
+        if action == 'update':
+            return "admin OR doctor/nurse (doctors/nurses cannot set role='admin' or promote patients to doctor/nurse; cannot self-promote to admin)"
+        return 'admin'
+
+    if table == 'user_profiles':
+        if action == 'create':
+            return 'owner (auth_id must match payload auth_id)'
+        return 'owner (profile owner only)'
+
+    if table == 'appointments':
+        if action == 'create':
+            return 'patient (own appointment) OR staff OR doctor/nurse'
+        return 'doctor OR nurse'
+
+    if table == 'medical_records':
+        if action in ('create', 'update', 'delete'):
+            return 'doctor OR nurse'
+        return 'doctor OR nurse'
+
+    return 'admin'
+
+
+def authorize_table_action(table: str, action: str, data: dict, item_id: int, current_user: dict) -> bool:
+    """Basic authorization rules for table-level actions.
+
+    - `action` is one of: 'create', 'update', 'delete'
+    - returns True if allowed, False otherwise
+    """
+    role = current_user.get('role')
+    uid = current_user.get('auth_id')
+
+    # Admins can always act
+    if role == 'admin':
+        return True
+
+    if table == 'auth_users':
+        # Non-admins have limited update permissions; deletes remain admin-only
+        if action == 'delete':
+            return False
+        if action == 'update':
+            # doctors and nurses may update users, but with constraints:
+            # - they cannot set role to 'admin'
+            # - they cannot change their own role to become admin (self-promotion to admin)
+            # - they cannot promote a 'patient' to 'doctor' or 'nurse'
+            if role in ('doctor', 'nurse'):
+                if not data:
+                    return True
+                # prevent setting role to admin
+                if data.get('role') == 'admin':
+                    return False
+                # fetch target user's current role to enforce promotion constraints
+                try:
+                    target = controller.get_by_id('auth_users', item_id)
+                    target_role = target.get('role') if target else None
+                except Exception:
+                    target_role = None
+
+                # prevent promoting a patient to doctor/nurse
+                if target_role == 'patient' and data.get('role') in ('doctor', 'nurse'):
+                    return False
+
+                # prevent self-promotion to admin (if user attempts to set their own role to admin)
+                if uid == item_id and data.get('role') == 'admin':
+                    return False
+
+                # otherwise allow editing non-role fields or role changes that are permitted
+                return True
+            return False
+        # create and other actions remain admin-only
+        return False
+
+    if table == 'user_profiles':
+        if action == 'create':
+            # allow user to create their own profile
+            return data.get('auth_id') == uid
+        # update/delete: allow owner
+        profile = controller.get_by_id('user_profiles', item_id)
+        return bool(profile and profile.get('auth_id') == uid)
+
+    if table == 'appointments':
+        if action == 'create':
+            # allow patient to create their own appointment or staff to create
+            return data.get('patient_id') == uid or data.get('staff_id') == uid or role in ('doctor', 'nurse')
+        # update/delete: staff or admin only
+        return role in ('doctor', 'nurse')
+
+    if table == 'medical_records':
+        # doctors and nurses can create/update/delete medical records
+        if action in ('create', 'update', 'delete'):
+            return role in ('doctor', 'nurse')
+        return False
+
+    # default: deny for non-admins
+    return False
