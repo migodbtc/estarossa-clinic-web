@@ -1,27 +1,8 @@
-import json
-from datetime import datetime, date
 from typing import Any, Dict, Optional
+import traceback
 
 from controller import controller
-
-
-def _default_serializer(obj: Any) -> str:
-    if isinstance(obj, (datetime, date)):
-        return obj.isoformat()
-    return str(obj)
-
-
-def _to_json_str(value: Optional[Dict[str, Any]]) -> Optional[str]:
-    if value is None:
-        return None
-    try:
-        return json.dumps(value, default=_default_serializer, ensure_ascii=False)
-    except Exception:
-        # Fallback: stringify values to avoid raising in audit path
-        try:
-            return json.dumps({k: str(v) for k, v in value.items()}, ensure_ascii=False)
-        except Exception:
-            return json.dumps({'error': 'unserializable'})
+from utils import _default_serializer, _to_json_str
 
 
 def log_audit(actor_user_id: Optional[int], table_name: str, record_id: Optional[int], action: str,
@@ -45,9 +26,8 @@ def log_audit(actor_user_id: Optional[int], table_name: str, record_id: Optional
     except Exception:
         # Audit must not break primary flow, but surface the error to logs for debugging.
         try:
-            import traceback as _tb
             print("[audit] failed to write audit record for", table_name, record_id)
-            _tb.print_exc()
+            traceback.print_exc()
         except Exception:
             # last-resort fallback
             try:

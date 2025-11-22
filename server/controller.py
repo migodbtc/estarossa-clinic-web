@@ -4,11 +4,7 @@ import pymysql.cursors
 from contextlib import contextmanager
 
 from app import mysql
-
-
-def _safe_identifier(name: str) -> bool:
-    """Allow only letters, numbers and underscores for identifiers."""
-    return bool(re.match(r"^[A-Za-z0-9_]+$", name))
+from utils import _safe_identifier
 
 
 class Controller:

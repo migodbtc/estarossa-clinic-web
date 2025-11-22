@@ -1,19 +1,18 @@
-from flask import jsonify, request, g, current_app
+from flask import Blueprint, jsonify, request, g, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import app
 from controller import controller
 from audit import log_audit
-import auth, time, traceback
+from utils import _log
+import auth, traceback
 
-TABLE = 'medical_records'
+TABLE = 'auth_users'
 
-def _log(msg: str):
-    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
+bp = Blueprint(TABLE, __name__, url_prefix='/api/auth_users')
 
 
-@app.route('/api/medical_records', methods=['POST'])
+@bp.route('', methods=['POST'])
 @jwt_required()
-def create_medical_record():
+def create_auth_user():
     data = request.get_json(silent=True) or {}
     _log(f"ENTER create: table={TABLE} method={request.method} path={request.path}")
     if not isinstance(data, dict):
@@ -54,8 +53,8 @@ def create_medical_record():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/medical_records', methods=['GET'])
-def list_medical_records():
+@bp.route('', methods=['GET'])
+def list_auth_users():
     _log(f"ENTER list: table={TABLE} {request.method} {request.path}")
     try:
         page = int(request.args.get('page', 1))
@@ -76,8 +75,8 @@ def list_medical_records():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/medical_records/<int:item_id>', methods=['GET'])
-def get_medical_record(item_id: int):
+@bp.route('/<int:item_id>', methods=['GET'])
+def get_auth_user(item_id: int):
     _log(f"ENTER get: table={TABLE} id={item_id}")
     if item_id <= 0:
         _log(f"ERROR get: invalid id {item_id}")
@@ -95,9 +94,9 @@ def get_medical_record(item_id: int):
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/medical_records/<int:item_id>', methods=['PUT'])
+@bp.route('/<int:item_id>', methods=['PUT'])
 @jwt_required()
-def update_medical_record(item_id: int):
+def update_auth_user(item_id: int):
     data = request.get_json() or {}
     _log(f"ENTER update: table={TABLE} id={item_id} payload_keys={list(data.keys())}")
     if item_id <= 0:
@@ -144,9 +143,9 @@ def update_medical_record(item_id: int):
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/medical_records/<int:item_id>', methods=['DELETE'])
+@bp.route('/<int:item_id>', methods=['DELETE'])
 @jwt_required()
-def delete_medical_record(item_id: int):
+def delete_auth_user(item_id: int):
     _log(f"ENTER delete: table={TABLE} id={item_id}")
     if item_id <= 0:
         _log(f"ERROR delete: invalid id {item_id}")

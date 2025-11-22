@@ -1,19 +1,19 @@
-from flask import jsonify, request, g, current_app
+from flask import Blueprint, jsonify, request, g, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import app
 from controller import controller
 from audit import log_audit
 import auth, time, traceback
 
-TABLE = 'appointments'
+TABLE = 'user_profiles'
+
+bp = Blueprint(TABLE, __name__, url_prefix='/api/user_profiles')
 
 def _log(msg: str):
     print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
 
-
-@app.route('/api/appointments', methods=['POST'])
+@bp.route('', methods=['POST'])
 @jwt_required()
-def create_appointment():
+def create_user_profile():
     data = request.get_json(silent=True) or {}
     _log(f"ENTER create: table={TABLE} method={request.method} path={request.path}")
     if not isinstance(data, dict):
@@ -39,7 +39,6 @@ def create_appointment():
             return jsonify({'error': 'forbidden'}), 403
 
         new_id = controller.create(TABLE, data)
-        # write audit record (best-effort, don't break main flow)
         try:
             new_row = controller.get_by_id(TABLE, new_id)
             actor = g.current_user.get('auth_id') if g.current_user else None
@@ -55,8 +54,8 @@ def create_appointment():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/appointments', methods=['GET'])
-def list_appointments():
+@bp.route('', methods=['GET'])
+def list_user_profiles():
     _log(f"ENTER list: table={TABLE} {request.method} {request.path}")
     try:
         page = int(request.args.get('page', 1))
@@ -77,8 +76,8 @@ def list_appointments():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/appointments/<int:item_id>', methods=['GET'])
-def get_appointment(item_id: int):
+@bp.route('/<int:item_id>', methods=['GET'])
+def get_user_profile(item_id: int):
     _log(f"ENTER get: table={TABLE} id={item_id}")
     if item_id <= 0:
         _log(f"ERROR get: invalid id {item_id}")
@@ -96,9 +95,9 @@ def get_appointment(item_id: int):
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/appointments/<int:item_id>', methods=['PUT'])
+@bp.route('/<int:item_id>', methods=['PUT'])
 @jwt_required()
-def update_appointment(item_id: int):
+def update_user_profile(item_id: int):
     data = request.get_json() or {}
     _log(f"ENTER update: table={TABLE} id={item_id} payload_keys={list(data.keys())}")
     if item_id <= 0:
@@ -127,11 +126,9 @@ def update_appointment(item_id: int):
         if not pk:
             _log(f"ERROR update: primary key not found for table {TABLE}")
             return jsonify({'error': 'Primary key not found for table'}), 400
-        # capture previous row for audit
         old_row = controller.get_by_id(TABLE, item_id)
         data[pk] = item_id
         affected = controller.update(TABLE, data)
-        # fetch new row after update for audit
         try:
             new_row = controller.get_by_id(TABLE, item_id)
             actor = g.current_user.get('auth_id') if g.current_user else None
@@ -147,9 +144,9 @@ def update_appointment(item_id: int):
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/appointments/<int:item_id>', methods=['DELETE'])
+@bp.route('/<int:item_id>', methods=['DELETE'])
 @jwt_required()
-def delete_appointment(item_id: int):
+def delete_user_profile(item_id: int):
     _log(f"ENTER delete: table={TABLE} id={item_id}")
     if item_id <= 0:
         _log(f"ERROR delete: invalid id {item_id}")
@@ -173,7 +170,6 @@ def delete_appointment(item_id: int):
             _log(f"FORBIDDEN delete: table={TABLE} id={item_id} user_role={cur_role} required={min_role}")
             return jsonify({'error': 'forbidden'}), 403
 
-        # capture previous row for audit
         old_row = controller.get_by_id(TABLE, item_id)
         affected = controller.delete(TABLE, item_id)
         try:

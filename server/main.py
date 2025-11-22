@@ -12,12 +12,20 @@ import time
 
 # modules
 import auth
-import tables.auth_users
-import tables.user_profiles
-import tables.appointments
-import tables.medical_records
-import tables.audit_log
-    
+from blueprints.auth_users import bp as auth_users_bp
+from blueprints.user_profiles import bp as user_profiles_bp
+from blueprints.appointments import bp as appointments_bp
+from blueprints.medical_records import bp as medical_records_bp
+from blueprints.audit_log import bp as audit_log_bp
+
+
+# blueprint registration
+for bp in (auth_users_bp, user_profiles_bp, appointments_bp, medical_records_bp, audit_log_bp):
+    try:
+        app.register_blueprint(bp)
+    except Exception:
+        print(f"[main] failed to register blueprint: {getattr(bp, 'name', repr(bp))}")
+        traceback.print_exc()
 
 
 @app.route('/', methods=['GET'])

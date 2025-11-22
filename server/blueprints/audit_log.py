@@ -1,16 +1,15 @@
-from flask import jsonify, request, g, current_app
+from flask import Blueprint, jsonify, request, g, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import app
 from controller import controller
-import auth, time, traceback
+from utils import _log
+import auth, traceback
 
 TABLE = 'audit_log'
 
-def _log(msg: str):
-    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
+bp = Blueprint(TABLE, __name__, url_prefix='/api/audit_log')
 
 
-@app.route('/api/audit_log', methods=['GET'])
+@bp.route('', methods=['GET'])
 @jwt_required()
 def list_audit_log():
     _log(f"ENTER list: table={TABLE} {request.method} {request.path}")
@@ -52,7 +51,7 @@ def list_audit_log():
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/api/audit_log/<int:item_id>', methods=['GET'])
+@bp.route('/<int:item_id>', methods=['GET'])
 @jwt_required()
 def get_audit_entry(item_id: int):
     _log(f"ENTER get: table={TABLE} id={item_id}")

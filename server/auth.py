@@ -4,7 +4,8 @@ import time
 
 from flask import request, jsonify
 from app import app
-from werkzeug.security import generate_password_hash, check_password_hash
+from utils import _log, _hash_password, _verify_password
+import traceback
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
@@ -23,18 +24,13 @@ from audit import log_audit
 jwt = JWTManager(app)
 
 
-def _log_auth(msg: str):
-    import time
-    print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
-
-
 def store_jti(auth_id: int, jti: str, expires_at_str: str) -> int:
     """Store a refresh token jti for `auth_id` in the `refresh_tokens` table.
 
     This wrapper keeps refresh-token storage local to auth logic and centralizes
     logging. It returns the created DB id.
     """
-    _log_auth(f"STORE jti for auth_id={auth_id} jti={jti}")
+    _log(f"[auth] STORE jti for auth_id={auth_id} jti={jti}")
     return controller.create('refresh_tokens', {
         'auth_id': auth_id,
         'refresh_token': jti,
@@ -44,12 +40,12 @@ def store_jti(auth_id: int, jti: str, expires_at_str: str) -> int:
 
 def revoke_jti(jti: str) -> int:
     """Revoke a refresh token by its jti. Returns number of affected rows."""
-    _log_auth(f"REVOKE jti={jti}")
+    _log(f"[auth] REVOKE jti={jti}")
     return controller.revoke_refresh_token(jti)
 
 
 def find_by_jti(jti: str):
-    _log_auth(f"FIND jti={jti}")
+    _log(f"[auth] FIND jti={jti}")
     return controller.find_one_by('refresh_tokens', 'refresh_token', jti)
 
 
@@ -58,22 +54,7 @@ def find_by_jti(jti: str):
 # to simplify authentication flow.
 
 
-def _hash_password(password: str) -> str:
-    # Default: werkzeug PBKDF2 hashing. To use a custom hasher, set
-    # `app.config['PASSWORD_HASHER']` to a callable that accepts a password
-    # and returns a hashed string.
-    hasher = app.config.get('PASSWORD_HASHER')
-    if callable(hasher):
-        return hasher(password)
-    return generate_password_hash(password)
 
-
-def _verify_password(pw_hash: str, password: str) -> bool:
-    # Support custom verifier via app.config['PASSWORD_VERIFY'] if provided.
-    verifier = app.config.get('PASSWORD_VERIFY')
-    if callable(verifier):
-        return bool(verifier(pw_hash, password))
-    return check_password_hash(pw_hash, password)
 
 
 @jwt.token_in_blocklist_loader
@@ -122,9 +103,8 @@ def register():
     except Exception:
         # do not fail registration if audit fails
         try:
-            import traceback as _tb
             print("[auth][audit] failed to write audit for new user", user_id)
-            _tb.print_exc()
+            traceback.print_exc()
         except Exception:
             pass
 
