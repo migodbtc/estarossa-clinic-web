@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta
 import traceback
 
-from utils import _log, _hash_password, _verify_password
+import utils
 from db.controller import controller
 from middleware.auth import store_jti, revoke_jti
 from services.audit import log_audit
@@ -34,7 +34,7 @@ def register():
     if existing:
         return jsonify({'error': 'user already exists'}), 400
 
-    pw_hash = _hash_password(password)
+    pw_hash = utils._hash_password(password)
     user_id = controller.create('auth_users', {
         'email': email,
         'password_hash': pw_hash,
@@ -47,7 +47,7 @@ def register():
         log_audit(user_id, 'auth_users', user_id, 'INSERT', None, new_row)
     except Exception:
         try:
-            _log("[auth][audit] failed to write audit for new user %s" % user_id)
+            utils._log("[auth][audit] failed to write audit for new user %s" % user_id)
             traceback.print_exc()
         except Exception:
             pass
@@ -65,7 +65,7 @@ def login():
         return jsonify({'error': 'email and password are required'}), 400
 
     user = controller.find_one_by('auth_users', 'email', email)
-    if not user or not _verify_password(user['password_hash'], password):
+    if not user or not utils._verify_password(user['password_hash'], password):
         return jsonify({'error': 'invalid credentials'}), 401
 
     identity = user['auth_id']
@@ -90,7 +90,7 @@ def login():
         store_jti(identity, jti, expires_at_str)
     except Exception:
         try:
-            _log(f"[auth] failed to store jti for user {identity}")
+            utils._log(f"[auth] failed to store jti for user {identity}")
         except Exception:
             pass
 
