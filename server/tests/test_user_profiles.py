@@ -70,3 +70,16 @@ def test_delete_user_profile_admin_allowed(client, auth_headers, monkeypatch):
     resp = client.delete(f'/api/user_profiles/{item_id}', headers=auth_headers)
     assert resp.status_code == 200
     assert resp.get_json().get('affected') == 1
+
+
+def test_create_user_profile_invalid_payload(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(db_controller.controller, 'get_by_id', lambda table, id: {'auth_id': 1, 'role': 'admin'})
+    resp = client.post('/api/user_profiles', json={'name': ''}, headers=auth_headers)
+    # empty name likely invalid
+    assert 400 <= resp.status_code < 500
+
+
+def test_get_user_profile_invalid_param(client, monkeypatch):
+    # non-integer id param
+    resp = client.get('/api/user_profiles/not-an-int')
+    assert 400 <= resp.status_code < 500 or resp.status_code == 404

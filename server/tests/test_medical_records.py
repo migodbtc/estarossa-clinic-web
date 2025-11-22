@@ -70,3 +70,17 @@ def test_delete_medical_record_admin_allowed(client, auth_headers, monkeypatch):
     resp = client.delete(f'/api/medical_records/{item_id}', headers=auth_headers)
     assert resp.status_code == 200
     assert resp.get_json().get('affected') == 1
+
+
+def test_create_medical_record_invalid_payload(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(db_controller.controller, 'get_by_id', lambda table, id: {'auth_id': 1, 'role': 'admin'})
+    # missing body
+    resp = client.post('/api/medical_records', json={}, headers=auth_headers)
+    assert 400 <= resp.status_code < 500
+
+
+def test_update_medical_record_invalid_json(client, auth_headers, monkeypatch):
+    monkeypatch.setattr(db_controller.controller, 'get_by_id', lambda table, id: {'auth_id': 1, 'role': 'admin'})
+    resp = client.put('/api/medical_records/11', data='[]', headers={**auth_headers, 'Content-Type': 'application/json'})
+    # app may reject array payloads for update body
+    assert 400 <= resp.status_code < 500

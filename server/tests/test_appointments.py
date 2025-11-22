@@ -71,3 +71,16 @@ def test_delete_appointment_admin_allowed(client, auth_headers, monkeypatch):
     resp = client.delete(f'/api/appointments/{item_id}', headers=auth_headers)
     assert resp.status_code == 200
     assert resp.get_json().get('affected') == 1
+
+
+def test_create_appointment_invalid_payload(client, auth_headers, monkeypatch):
+    # Admin but missing required fields -> client error
+    monkeypatch.setattr(db_controller.controller, 'get_by_id', lambda table, id: {'auth_id': 1, 'role': 'admin'})
+    resp = client.post('/api/appointments', json={}, headers=auth_headers)
+    assert 400 <= resp.status_code < 500
+
+
+def test_update_appointment_invalid_id_param(client, auth_headers, monkeypatch):
+    # invalid id type in the URL (non-integer) should be client error or 404
+    resp = client.put('/api/appointments/invalid-id', json={'patient': 'x'}, headers=auth_headers)
+    assert 400 <= resp.status_code < 500 or resp.status_code == 404

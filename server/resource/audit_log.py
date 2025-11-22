@@ -15,12 +15,15 @@ def list_audit_log():
     _log(f"ENTER list: table={TABLE} {request.method} {request.path}")
     try:
         page = int(request.args.get('page', 1))
-        per_page = int(current_app.config.get('DEFAULT_PER_PAGE', 20))
+        per_page = int(request.args.get('per_page', current_app.config.get('DEFAULT_PER_PAGE', 20)))
     except Exception:
         _log("ERROR list: invalid pagination params")
         return jsonify({'error': 'invalid pagination parameters'}), 400
-    if page < 1 or per_page < 1:
-        _log(f"ERROR list: page={page} per_page={per_page} out of range")
+
+    # Strict validation: enforce positive page and per_page and a sensible maximum
+    MAX_PER_PAGE = int(current_app.config.get('MAX_PER_PAGE', 100))
+    if page < 1 or per_page < 1 or per_page > MAX_PER_PAGE:
+        _log(f"ERROR list: page={page} per_page={per_page} out of range (max={MAX_PER_PAGE})")
         return jsonify({'error': 'pagination parameters out of range'}), 400
     try:
         # only privileged users should read audit; check authorization

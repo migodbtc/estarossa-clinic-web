@@ -22,3 +22,15 @@ def test_login_success(client, monkeypatch):
     assert resp.status_code == 200
     j = resp.get_json()
     assert 'access_token' in j and 'refresh_token' in j
+
+
+def test_register_invalid_payload_missing_fields(client):
+    # missing email -> should be client error
+    resp = client.post('/auth/register', json={'password': 'p'})
+    assert 400 <= resp.status_code < 500
+
+
+def test_login_invalid_payload_missing_password(client):
+    # missing password -> should be client error
+    resp = client.post('/auth/login', json={'email': 'x@example.com'})
+    assert 400 <= resp.status_code < 500
