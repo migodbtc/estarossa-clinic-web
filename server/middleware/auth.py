@@ -2,24 +2,19 @@ import os
 from datetime import datetime, timedelta
 import time
 
-from flask import request, jsonify
+from flask import jsonify
 from app import app
-from utils import _log, _hash_password, _verify_password
+from utils import _log
 import traceback
 from flask_jwt_extended import (
     JWTManager,
-    create_access_token,
-    create_refresh_token,
-    jwt_required,
     get_jwt_identity,
-    get_jwt,
-    decode_token,
 )
 
-from controller import controller
+from db.controller import controller
 from functools import wraps
 from flask import g
-from audit import log_audit
+
 
 jwt = JWTManager(app)
 
@@ -49,14 +44,6 @@ def find_by_jti(jti: str):
     return controller.find_one_by('refresh_tokens', 'refresh_token', jti)
 
 
-# Admin gate feature removed. Routes are no longer protected by an
-# admin-gate session flag. The old decorator was intentionally removed
-# to simplify authentication flow.
-
-
-
-
-
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload) -> bool:
     # Only check refresh tokens against DB blocklist
@@ -71,106 +58,6 @@ def check_if_token_revoked(jwt_header, jwt_payload) -> bool:
         # token not found -> treat as revoked/invalid
         return True
     return bool(row.get('revoked'))
-
-
-@app.route('/auth/register', methods=['POST'])
-def register():
-    payload = request.get_json() or {}
-    email = payload.get('email')
-    password = payload.get('password')
-    role = payload.get('role', 'patient')
-
-    if not email or not password:
-        return jsonify({'error': 'email and password are required'}), 400
-    if role not in ('patient', 'doctor', 'nurse', 'admin'):
-        return jsonify({'error': 'invalid role'}), 400
-
-    existing = controller.find_one_by('auth_users', 'email', email)
-    if existing:
-        return jsonify({'error': 'user already exists'}), 400
-
-    pw_hash = _hash_password(password)
-    user_id = controller.create('auth_users', {
-        'email': email,
-        'password_hash': pw_hash,
-        'role': role,
-    })
-
-    # write audit record: self-registration -> actor is the new user
-    try:
-        new_row = controller.get_by_id('auth_users', user_id)
-        log_audit(user_id, 'auth_users', user_id, 'INSERT', None, new_row)
-    except Exception:
-        # do not fail registration if audit fails
-        try:
-            print("[auth][audit] failed to write audit for new user", user_id)
-            traceback.print_exc()
-        except Exception:
-            pass
-
-    return jsonify({'id': user_id}), 201
-
-
-@app.route('/auth/login', methods=['POST'])
-def login():
-    payload = request.get_json() or {}
-    email = payload.get('email')
-    password = payload.get('password')
-
-    if not email or not password:
-        return jsonify({'error': 'email and password are required'}), 400
-
-    user = controller.find_one_by('auth_users', 'email', email)
-    if not user or not _verify_password(user['password_hash'], password):
-        return jsonify({'error': 'invalid credentials'}), 401
-
-    identity = user['auth_id']
-    additional_claims = {'role': user.get('role')}
-    access_expires = app.config.get('JWT_ACCESS_TOKEN_EXPIRES')
-    refresh_expires = app.config.get('JWT_REFRESH_TOKEN_EXPIRES')
-
-    # Flask-JWT-Extended / PyJWT expect the subject (sub) to be a string.
-    identity_str = str(identity)
-    access_token = create_access_token(identity=identity_str, additional_claims=additional_claims)
-    refresh_token = create_refresh_token(identity=identity_str)
-
-    # store the refresh token's jti in DB (do not store the raw token)
-    decoded = decode_token(refresh_token)
-    jti = decoded.get('jti')
-    expires_at = (datetime.utcnow() + refresh_expires) if refresh_expires else (datetime.utcnow() + timedelta(days=14))
-    expires_at_str = expires_at.strftime('%Y-%m-%d %H:%M:%S')
-    store_jti(identity, jti, expires_at_str)
-
-    return jsonify({
-        'access_token': access_token,
-        'refresh_token': refresh_token,
-        'token_type': 'bearer',
-    })
-
-
-@app.route('/auth/refresh', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-    identity = get_jwt_identity()
-    new_access = create_access_token(identity=identity)
-    return jsonify({'access_token': new_access})
-
-
-@app.route('/auth/logout', methods=['POST'])
-@jwt_required(refresh=True)
-def logout():
-    # revoke the refresh token used for this request
-    jwt_payload = get_jwt()
-    jti = jwt_payload.get('jti')
-    if not jti:
-        return jsonify({'error': 'invalid token'}), 400
-    affected = revoke_jti(jti)
-    if affected:
-        return jsonify({'revoked': True})
-    return jsonify({'revoked': False}), 400
-
-
-# admin gate removed: session-based gate and HTML form are not used anymore.
 
 
 def roles_required(*roles):
@@ -203,7 +90,6 @@ def roles_required(*roles):
             return fn(*args, **kwargs)
         return wrapper
     return decorator
-
 
 
 def minimum_role_for_table_action(table: str, action: str, data: dict, item_id: int, current_user: dict) -> str:

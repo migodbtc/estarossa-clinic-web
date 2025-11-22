@@ -6,21 +6,22 @@ from app import app
 import os
 from datetime import timedelta
 from pprint import pprint
-from controller import controller
+from db.controller import controller
 import traceback
 import time
 
 # modules
-import auth
-from blueprints.auth_users import bp as auth_users_bp
-from blueprints.user_profiles import bp as user_profiles_bp
-from blueprints.appointments import bp as appointments_bp
-from blueprints.medical_records import bp as medical_records_bp
-from blueprints.audit_log import bp as audit_log_bp
+import middleware.auth as auth
+from resource.auth_users import bp as auth_users_bp
+from resource.user_profiles import bp as user_profiles_bp
+from resource.appointments import bp as appointments_bp
+from resource.medical_records import bp as medical_records_bp
+from resource.audit_log import bp as audit_log_bp
+from resource.auth import bp as auth_bp
 
 
 # blueprint registration
-for bp in (auth_users_bp, user_profiles_bp, appointments_bp, medical_records_bp, audit_log_bp):
+for bp in (auth_bp, auth_users_bp, user_profiles_bp, appointments_bp, medical_records_bp, audit_log_bp):
     try:
         app.register_blueprint(bp)
     except Exception:

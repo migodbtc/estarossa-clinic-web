@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request, g, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from controller import controller
+from db.controller import controller
 from utils import _log
-import auth, traceback
+import middleware.auth as auth, traceback
 
 TABLE = 'audit_log'
 

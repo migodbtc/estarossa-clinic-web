@@ -1,4 +1,11 @@
 import time
+from werkzeug.security import generate_password_hash, check_password_hash
+from app import app
+import json
+from datetime import datetime, date
+from typing import Any, Dict, Optional
+from db.controller import controller as _controller_instance
+import re
 
 def _log(msg: str):
     """Simple timestamped log helper used by table modules.
@@ -14,11 +21,6 @@ def _log(msg: str):
             print(msg)
         except Exception:
             pass
-
-
-# -- auth helpers ---------------------------------------------------------
-from werkzeug.security import generate_password_hash, check_password_hash
-from app import app
 
 def _hash_password(password: str) -> str:
     """Hash password using app-configured hasher or Werkzeug default."""
@@ -41,12 +43,6 @@ def _verify_password(pw_hash: str, password: str) -> bool:
     except Exception:
         return False
 
-
-# -- audit helpers --------------------------------------------------------
-import json
-from datetime import datetime, date
-from typing import Any, Dict, Optional
-
 def _default_serializer(obj: Any) -> str:
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
@@ -65,19 +61,5 @@ def _to_json_str(value: Optional[Dict[str, Any]]) -> Optional[str]:
         except Exception:
             return json.dumps({'error': 'unserializable'})
 
-
-# -- safe-identifier wrapper (delegates to controller) -------------------
-try:
-    from controller import controller as _controller_instance
-    def _safe_identifier(name: str) -> bool:
-        # delegate to controller._safe_identifier if available
-        try:
-            return _controller_instance._safe_identifier(name)  # type: ignore[attr-defined]
-        except Exception:
-            # fallback to a conservative regex
-            import re
-            return bool(re.match(r"^[A-Za-z0-9_]+$", name))
-except Exception:
-    def _safe_identifier(name: str) -> bool:
-        import re
-        return bool(re.match(r"^[A-Za-z0-9_]+$", name))
+def _safe_identifier(name: str) -> bool:
+    return bool(re.match(r"^[A-Za-z0-9_]+$", name))
