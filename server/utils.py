@@ -1,11 +1,14 @@
+# packages
 import time
-from werkzeug.security import generate_password_hash, check_password_hash
-from app import app
 import json
+import re
 from datetime import datetime, date
 from typing import Any, Dict, Optional
+from werkzeug.security import check_password_hash, generate_password_hash
+
+# modules
+from app import app
 from db.controller import controller as _controller_instance
-import re
 
 def _log(msg: str):
     """Simple timestamped log helper used by table modules.

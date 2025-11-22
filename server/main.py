@@ -3,15 +3,10 @@
 from flask import Response, jsonify, redirect, render_template, url_for, request, g
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import app
-import os
-from datetime import timedelta
-from pprint import pprint
-from db.controller import controller
 import traceback
 import time
 
 # modules
-import middleware.auth as auth
 from resource.auth_users import bp as auth_users_bp
 from resource.user_profiles import bp as user_profiles_bp
 from resource.appointments import bp as appointments_bp
