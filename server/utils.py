@@ -8,7 +8,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # modules
 from app import app
-from db.controller import controller as _controller_instance
 
 def _log(msg: str):
     """Simple timestamped log helper used by table modules.
