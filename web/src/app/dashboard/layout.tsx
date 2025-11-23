@@ -44,40 +44,53 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <header className="bg-white text-gray-900 dark:bg-slate-900 dark:text-slate-100 shadow p-4 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/landing"
-            className="font-bold text-gray-900 dark:text-slate-100"
-          >
-            Clinic
-          </Link>
-          <span className="text-sm text-zinc-600 dark:text-slate-300">
-            Role: {role}
-          </span>
+      <header className="bg-white text-gray-900 dark:bg-slate-900 dark:text-slate-100 shadow p-4">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/landing"
+              className="font-bold text-gray-900 dark:text-slate-100"
+            >
+              Clinic
+            </Link>
+            <span className="text-sm text-zinc-600 dark:text-slate-300">
+              Role: {role}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button asChild size="sm">
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <Button onClick={logout} variant="destructive" size="sm">
+              Logout
+            </Button>
+          </div>
         </div>
-        <nav className="flex items-center gap-3">
-          <Button asChild size="sm">
-            <Link href="/dashboard">Home</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/dashboard/settings">Settings</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/dashboard/help">Help</Link>
-          </Button>
-          <Button onClick={logout} variant="destructive" size="sm">
-            Logout
-          </Button>
-        </nav>
       </header>
-      <div className="p-6">
-        <div className="mb-4">
-          <RoleNav role={role} />
-        </div>
-        <Card className="bg-white text-gray-900 dark:bg-slate-800 dark:text-slate-100">
-          <CardContent>{children}</CardContent>
-        </Card>
+
+      <div className="container mx-auto grid grid-cols-[240px_1fr] gap-6 p-6">
+        <aside aria-label="Sidebar" className="rounded-lg">
+          <Card className="bg-white text-gray-900 dark:bg-slate-800 dark:text-slate-100 h-full">
+            <CardHeader>
+              <CardTitle className="text-lg">Navigation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RoleNav role={role} />
+            </CardContent>
+          </Card>
+        </aside>
+
+        <main aria-label="Main content">
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold">Dashboard</h2>
+            <p className="text-sm text-gray-600 dark:text-slate-300">
+              Placeholder dashboard. All subroutes redirect here.
+            </p>
+          </div>
+          <Card className="bg-white text-gray-900 dark:bg-slate-800 dark:text-slate-100">
+            <CardContent>{children}</CardContent>
+          </Card>
+        </main>
       </div>
     </div>
   );
@@ -86,57 +99,51 @@ export default function DashboardLayout({
 function RoleNav({ role }: { role: string }) {
   if (role === "patient") {
     return (
-      <nav className="flex gap-2">
+      <nav className="flex flex-col gap-2">
         <Button asChild size="sm">
-          <Link href="/dashboard/patient/overview">My Overview</Link>
+          <Link href="/dashboard">My Overview</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/patient/appointments">My Appointments</Link>
+          <Link href="/dashboard">My Appointments</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/patient/medical-records">
-            My Medical Records
-          </Link>
+          <Link href="/dashboard">My Medical Records</Link>
         </Button>
       </nav>
     );
   }
   if (role === "nurse" || role === "doctor") {
     return (
-      <nav className="flex gap-2">
+      <nav className="flex flex-col gap-2">
         <Button asChild size="sm">
-          <Link href="/dashboard/general/overview">Overview</Link>
+          <Link href="/dashboard">Overview</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/general/appointments">Appointments</Link>
+          <Link href="/dashboard">Appointments</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/general/medical-records">Medical Records</Link>
+          <Link href="/dashboard">Medical Records</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/general/patients">Patients</Link>
+          <Link href="/dashboard">Patients</Link>
         </Button>
       </nav>
     );
   }
   if (role === "admin") {
     return (
-      <nav className="flex gap-2 flex-wrap">
+      <nav className="flex flex-col gap-2">
         <Button asChild size="sm">
-          <Link href="/dashboard/admin/users">User Management</Link>
+          <Link href="/dashboard">User Management</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/admin/schema">Schema Blueprint</Link>
+          <Link href="/dashboard">Schema Blueprint</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/admin/crud/appointments">
-            Appointments (CRUD)
-          </Link>
+          <Link href="/dashboard">Appointments (CRUD)</Link>
         </Button>
         <Button asChild size="sm">
-          <Link href="/dashboard/admin/crud/medical-records">
-            Medical Records (CRUD)
-          </Link>
+          <Link href="/dashboard">Medical Records (CRUD)</Link>
         </Button>
       </nav>
     );
