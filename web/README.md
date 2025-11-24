@@ -20,18 +20,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## App routing overview (added)
-
-This repo now includes a simple routing scaffold for the clinic app. Behavior:
-
-- Root (`/`) redirects to `/landing`.
-- Landing page: `/landing`
-- Auth: `/auth/login`, `/auth/register`, `/auth/forgot`
-- Dashboard: `/dashboard` protected by a simple client-side guard that checks `localStorage.user` (mock). Use the login page to set a role for testing.
-- Role-specific dashboard routes exist under `/dashboard/*` (see nav in `dashboard/layout.tsx`).
-
-This is a minimal, placeholder implementation meant to establish routes and basic flows. UI libraries and real auth/backend integration are not included.
-
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
