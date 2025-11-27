@@ -18,9 +18,9 @@ import {
   faFacebookF,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import AuthLayout from "@/components/layouts/AuthLayout";
+// Layout is provided by the route `app/(web)/(auth)/layout.tsx` so don't import it here
 
-const Page = () => {
+const RegisterPage = () => {
   const [step, setStep] = useState<number>(1);
   const [form, setForm] = useState({
     email: "",
@@ -71,7 +71,7 @@ const Page = () => {
   };
 
   return (
-    <AuthLayout>
+    <>
       <div className="flex flex-col items-center gap-3 mb-4">
         <FontAwesomeIcon
           icon={faUserPlus as IconProp}
@@ -394,8 +394,8 @@ const Page = () => {
           </a>
         </div>
       )}
-    </AuthLayout>
+    </>
   );
 };
 
-export default Page;
+export default RegisterPage;

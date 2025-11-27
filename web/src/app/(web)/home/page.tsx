@@ -6,7 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Page = () => {
+const HomePage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-800">
       <header className="w-full bg-white shadow-sm" role="banner">
@@ -388,4 +388,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default HomePage;

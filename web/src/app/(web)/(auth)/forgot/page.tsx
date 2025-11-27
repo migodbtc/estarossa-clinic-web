@@ -4,10 +4,8 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import AuthLayout from "@/components/layouts/AuthLayout";
-
-const Page = () => (
-  <AuthLayout>
+const ForgotPasswordPage = () => (
+  <>
     <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">
       Forgot password
     </h1>
@@ -38,7 +36,7 @@ const Page = () => (
         </a>
       </div>
     </form>
-  </AuthLayout>
+  </>
 );
 
-export default Page;
+export default ForgotPasswordPage;

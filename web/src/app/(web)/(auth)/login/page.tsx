@@ -2,6 +2,8 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import {
   faArrowLeft,
   faArrowRight,
@@ -14,11 +16,21 @@ import {
   faFacebookF,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import AuthLayout from "@/components/layouts/AuthLayout";
+// Layout is provided by the route `app/(web)/(auth)/layout.tsx` so don't import it here
 
-const Page = () => {
+const LoginPage = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // For now redirect to the dashboard after submit
+    router.push("/workspace");
+  };
+
   return (
-    <AuthLayout>
+    <>
       {/* Big logo area (FortAwesome + arrow-to-door) */}
       <div className="flex flex-col items-center gap-3 mb-4">
         <FontAwesomeIcon
@@ -35,7 +47,7 @@ const Page = () => {
         Sign in your registered account to access the Estarossa dashboard
       </p>
 
-      <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Email row */}
         <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-3 py-2">
           <FontAwesomeIcon
@@ -43,9 +55,14 @@ const Page = () => {
             className="text-slate-500"
           />
           <input
+            name="email"
             type="email"
             placeholder="Enter your email here..."
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="flex-1 bg-transparent outline-none text-sm"
+            autoComplete="email"
+            required
           />
         </div>
 
@@ -56,9 +73,14 @@ const Page = () => {
             className="text-slate-500"
           />
           <input
+            name="password"
             type="password"
             placeholder="Enter your password..."
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="flex-1 bg-transparent outline-none text-sm"
+            autoComplete="current-password"
+            required
           />
         </div>
 
@@ -135,8 +157,8 @@ const Page = () => {
           </a>
         </div>
       </form>
-    </AuthLayout>
+    </>
   );
 };
 
-export default Page;
+export default LoginPage;
