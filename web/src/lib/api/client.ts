@@ -1,8 +1,4 @@
-export type ApiError = { status: number; message: string; details?: any };
-
-export type ApiResponse<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: ApiError };
+import type { ApiError, ApiResponse } from "@/types/api";
 
 export class ApiClient {
   baseUrl: string;

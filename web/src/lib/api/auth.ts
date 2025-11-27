@@ -1,5 +1,5 @@
-import { apiClient, ApiResponse } from "./client";
-import type { LoginRequest, LoginResponse } from "./types";
+import { LoginRequest, LoginResponse, ApiResponse } from "@/types/api";
+import { apiClient } from "@/lib/api/client";
 
 export async function login(
   creds: LoginRequest

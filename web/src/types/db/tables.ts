@@ -3,7 +3,7 @@ import type {
   AppointmentStatus,
   Sex,
   AuditAction,
-} from "@/types/dbEnums";
+} from "@/types/db/enums";
 
 export interface AuthUser {
   auth_id: number;

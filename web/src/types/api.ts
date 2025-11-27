@@ -10,3 +10,9 @@ export type LoginResponse = {
 };
 
 export type GenericServerError = { message?: string; [key: string]: any };
+
+export type ApiError = { status: number; message: string; details?: any };
+
+export type ApiResponse<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: ApiError };
