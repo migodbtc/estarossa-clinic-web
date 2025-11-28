@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
+    "flowbite": "^4.0.1",
+    "flowbite-react": "^0.12.10",
     "fortawesome": "^0.0.1-security",
     "next": "16.0.3",
     "react": "19.2.0",

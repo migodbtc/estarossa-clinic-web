@@ -18,7 +18,7 @@ const ForgotPasswordPage = () => (
         <input
           type="email"
           placeholder="you@email.com"
-          className="flex-1 bg-transparent outline-none text-sm"
+          className="flex-1 bg-transparent outline-none text-sm border-none"
         />
       </div>
 

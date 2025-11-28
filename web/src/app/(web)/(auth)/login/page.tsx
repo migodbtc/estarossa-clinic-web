@@ -60,7 +60,7 @@ const LoginPage = () => {
             placeholder="Enter your email here..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-sm"
+            className="flex-1 bg-transparent outline-none text-sm border-none"
             autoComplete="email"
             required
           />
@@ -78,7 +78,7 @@ const LoginPage = () => {
             placeholder="Enter your password..."
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-sm"
+            className="flex-1 bg-transparent outline-none text-sm border-none"
             autoComplete="current-password"
             required
           />

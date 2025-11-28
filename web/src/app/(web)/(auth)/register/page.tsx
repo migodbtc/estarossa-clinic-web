@@ -168,7 +168,7 @@ const RegisterPage = () => {
                   onChange={(e) => update("email", e.target.value)}
                   type="email"
                   placeholder="you@email.com"
-                  className="flex-1 bg-transparent outline-none text-sm"
+                  className="flex-1 bg-transparent outline-none text-sm border-none"
                   required
                 />
               </div>
@@ -190,7 +190,7 @@ const RegisterPage = () => {
                     onChange={(e) => update("firstName", e.target.value)}
                     type="text"
                     placeholder="First name"
-                    className="flex-1 bg-transparent outline-none text-sm"
+                    className="flex-1 bg-transparent outline-none text-sm border-none"
                     required
                   />
                 </div>
@@ -211,7 +211,7 @@ const RegisterPage = () => {
                     onChange={(e) => update("middleName", e.target.value)}
                     type="text"
                     placeholder="Middle name"
-                    className="flex-1 bg-transparent outline-none text-sm"
+                    className="flex-1 bg-transparent outline-none text-sm border-none"
                   />
                 </div>
               </div>
@@ -231,7 +231,7 @@ const RegisterPage = () => {
                     onChange={(e) => update("lastName", e.target.value)}
                     type="text"
                     placeholder="Last name"
-                    className="flex-1 bg-transparent outline-none text-sm"
+                    className="flex-1 bg-transparent outline-none text-sm border-none"
                     required
                   />
                 </div>
@@ -254,7 +254,7 @@ const RegisterPage = () => {
                     value={form.birthdate}
                     onChange={(e) => update("birthdate", e.target.value)}
                     type="date"
-                    className="flex-1 bg-transparent outline-none text-sm"
+                    className="flex-1 bg-transparent outline-none text-sm border-none"
                     required
                   />
                 </div>
@@ -269,7 +269,7 @@ const RegisterPage = () => {
                     id="sex"
                     value={form.sex}
                     onChange={(e) => update("sex", e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-sm"
+                    className="flex-1 bg-transparent outline-none text-sm border-none"
                     required
                   >
                     <option value="">Select sex</option>
@@ -292,7 +292,7 @@ const RegisterPage = () => {
                   onChange={(e) => update("address", e.target.value)}
                   type="text"
                   placeholder="Address"
-                  className="flex-1 bg-transparent outline-none text-sm"
+                  className="flex-1 bg-transparent outline-none text-sm border-none"
                   required
                 />
               </div>
@@ -314,7 +314,7 @@ const RegisterPage = () => {
                   onChange={(e) => update("contactNumber", e.target.value)}
                   type="tel"
                   placeholder="Contact number"
-                  className="flex-1 bg-transparent outline-none text-sm"
+                  className="flex-1 bg-transparent outline-none text-sm border-none"
                   required
                 />
               </div>
