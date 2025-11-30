@@ -16,67 +16,154 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { Role } from "@/types/db/enums";
 import { useSidebar } from "@/contexts/WorkspaceSidebarContext";
+import React, { useMemo } from "react";
+import { usePathname } from "next/navigation";
 
 type WorkspaceSidebarProps = {
   role?: Role;
 };
+type SidebarRow = Record<string, { href: string; label: string }[]>;
+
+type SidebarLinkProps = {
+  href: string;
+  label: string;
+  compact: boolean;
+  isActive: boolean;
+};
+
+const ROLE_BUTTONS: Record<string, SidebarRow> = {
+  patient: {
+    Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
+    Workspace: [
+      { href: "/workspace/appointments", label: "My Appointments" },
+      { href: "/workspace/records", label: "My Medical Records" },
+    ],
+    Miscellaneous: [
+      { href: "/workspace/profile", label: "Profile" },
+      { href: "/workspace/settings", label: "Settings" },
+    ],
+  },
+  doctor: {
+    Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
+    Workspace: [
+      { href: "/workspace/appointments", label: "Today's Appointments" },
+      { href: "/workspace/patients", label: "Patient List" },
+      { href: "/workspace/records", label: "Records" },
+    ],
+    Miscellaneous: [
+      { href: "/workspace/profile", label: "Profile" },
+      { href: "/workspace/settings", label: "Settings" },
+    ],
+  },
+  nurse: {
+    Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
+    Workspace: [
+      { href: "/workspace/appointments", label: "Today's Appointments" },
+      { href: "/workspace/patients", label: "Patient List" },
+      { href: "/workspace/records", label: "Records" },
+    ],
+    Miscellaneous: [
+      { href: "/workspace/profile", label: "Profile" },
+      { href: "/workspace/settings", label: "Settings" },
+    ],
+  },
+  admin: {
+    Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
+    Workspace: [
+      { href: "/workspace/users", label: "Users" },
+      { href: "/workspace/audits", label: "Audits" },
+      { href: "/workspace/db", label: "DB Console" },
+    ],
+    Miscellaneous: [
+      { href: "/workspace/profile", label: "Profile" },
+      { href: "/workspace/settings", label: "Settings" },
+    ],
+  },
+};
+
+const getIconForLabel = (label: string) => {
+  if (label.includes("Appoint")) {
+    return faCalendarCheck;
+  } else if (label.includes("Record") || label.includes("Medical")) {
+    return faFileMedicalAlt;
+  } else if (label.includes("Patient")) {
+    return faUsers;
+  } else if (label.includes("Users")) {
+    return faUser;
+  } else if (label.includes("Audits")) {
+    return faClipboard;
+  } else if (label.includes("DB")) {
+    return faDatabase;
+  } else if (label.includes("Profile")) {
+    return faIdBadge;
+  } else if (label.includes("Settings")) {
+    return faCog;
+  } else if (label.includes("Overview")) {
+    return faListAlt;
+  } else {
+    return faClipboardList;
+  }
+};
+
+const SidebarLink = React.memo(
+  ({ href, label, compact = false, isActive = false }: SidebarLinkProps) => {
+    const icon = getIconForLabel(label);
+    const baseClass = compact
+      ? "flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl text-white bg-slate-600 text-sm"
+      : "flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 text-sm";
+    const activeClass = isActive
+      ? "border-2 border-slate-400 bg-slate-300"
+      : "";
+
+    if (compact) {
+      return (
+        <Link
+          href={href}
+          className={`${baseClass} ${activeClass}`}
+          aria-label={label}
+          aria-current={isActive ? "page" : undefined}
+        >
+          <span className="w-5 text-center">
+            <FontAwesomeIcon icon={icon} />
+          </span>
+        </Link>
+      );
+    }
+    return (
+      <Link
+        href={href}
+        className={`${baseClass} ${activeClass}`}
+        aria-label={label}
+        aria-current={isActive ? "page" : undefined}
+      >
+        <span className="w-5 text-center">
+          <FontAwesomeIcon icon={icon} />
+        </span>
+      </Link>
+    );
+  }
+);
 
 export default function WorkspaceSidebar({
   role = "patient" as Role,
 }: WorkspaceSidebarProps) {
   const { open } = useSidebar();
+  const pathname = usePathname() || "/";
 
-  // Sidebar rows
-  type SidebarRow = Record<string, { href: string; label: string }[]>;
+  const sections = useMemo(() => {
+    return ROLE_BUTTONS[role as string] ?? ROLE_BUTTONS["patient"];
+  }, [role]);
 
-  const roleButtons: Record<string, SidebarRow> = {
-    patient: {
-      Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
-      Workspace: [
-        { href: "/workspace/appointments", label: "My Appointments" },
-        { href: "/workspace/records", label: "My Medical Records" },
-      ],
-      Miscellaneous: [
-        { href: "/workspace/profile", label: "Profile" },
-        { href: "/workspace/settings", label: "Settings" },
-      ],
-    },
-    doctor: {
-      Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
-      Workspace: [
-        { href: "/workspace/appointments", label: "Today's Appointments" },
-        { href: "/workspace/patients", label: "Patient List" },
-        { href: "/workspace/records", label: "Records" },
-      ],
-      Miscellaneous: [
-        { href: "/workspace/profile", label: "Profile" },
-        { href: "/workspace/settings", label: "Settings" },
-      ],
-    },
-    nurse: {
-      Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
-      Workspace: [
-        { href: "/workspace/appointments", label: "Today's Appointments" },
-        { href: "/workspace/patients", label: "Patient List" },
-        { href: "/workspace/records", label: "Records" },
-      ],
-      Miscellaneous: [
-        { href: "/workspace/profile", label: "Profile" },
-        { href: "/workspace/settings", label: "Settings" },
-      ],
-    },
-    admin: {
-      Dashboard: [{ href: "/workspace/overview", label: "Overview" }],
-      Workspace: [
-        { href: "/workspace/users", label: "Users" },
-        { href: "/workspace/audits", label: "Audits" },
-        { href: "/workspace/db", label: "DB Console" },
-      ],
-      Miscellaneous: [
-        { href: "/workspace/profile", label: "Profile" },
-        { href: "/workspace/settings", label: "Settings" },
-      ],
-    },
+  const cleanPathName = (p: string) =>
+    p === "/" ? "/" : p.replace(/\/+$/, "");
+  const currentPath = cleanPathName(pathname);
+
+  const isLinkActive = (href: string, exact = true) => {
+    const h = cleanPathName(href);
+    if (exact) return currentPath === h;
+    return (
+      cleanPathName(href) === currentPath || currentPath.startsWith(href + "/")
+    );
   };
 
   return (
@@ -102,108 +189,29 @@ export default function WorkspaceSidebar({
           ) : null}
         </div>
 
-        {open ? (
-          <div className="w-full mt-3">
-            <nav aria-label="Sidebar" className="space-y-4">
-              {Object.entries(roleButtons[role as string] || {}).map(
-                ([sectionTitle, items]) => (
-                  <div key={sectionTitle} className="mb-4">
-                    <div className="text-xs uppercase text-slate-300 font-semibold mb-2">
-                      {sectionTitle}
-                    </div>
-                    <ul className="space-y-1">
-                      {items.map((b) => (
-                        <li key={b.href}>
-                          <Link
-                            href={b.href}
-                            className="flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 text-sm"
-                            aria-label={b.label}
-                          >
-                            <span className="w-5 text-center">
-                              {b.label.includes("Appoint") ? (
-                                <FontAwesomeIcon icon={faCalendarCheck} />
-                              ) : b.label.includes("Record") ||
-                                b.label.includes("Medical") ? (
-                                <FontAwesomeIcon icon={faFileMedicalAlt} />
-                              ) : b.label.includes("Patient") ? (
-                                <FontAwesomeIcon icon={faUsers} />
-                              ) : b.label.includes("Users") ? (
-                                <FontAwesomeIcon icon={faUser} />
-                              ) : b.label.includes("Audits") ? (
-                                <FontAwesomeIcon icon={faClipboard} />
-                              ) : b.label.includes("DB") ? (
-                                <FontAwesomeIcon icon={faDatabase} />
-                              ) : b.label.includes("Profile") ? (
-                                <FontAwesomeIcon icon={faIdBadge} />
-                              ) : b.label.includes("Settings") ? (
-                                <FontAwesomeIcon icon={faCog} />
-                              ) : b.label.includes("Overview") ? (
-                                <FontAwesomeIcon icon={faListAlt} />
-                              ) : (
-                                <FontAwesomeIcon icon={faClipboardList} />
-                              )}
-                            </span>
-                            <span>{b.label}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              )}
-            </nav>
-          </div>
-        ) : (
-          <div className="w-full mt-3">
-            <nav aria-label="Sidebar" className="space-y-4">
-              {Object.entries(roleButtons[role as string] || {}).map(
-                ([sectionTitle, items]) => (
-                  <div key={sectionTitle} className="mb-4">
-                    <div className="text-xs uppercase text-slate-300 font-semibold mb-2">
-                      {`${sectionTitle.substring(0, 4)}...`}
-                    </div>
-                    <ul className="space-y-1">
-                      {items.map((b) => (
-                        <li key={b.href}>
-                          <Link
-                            href={b.href}
-                            className="flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl text-white bg-slate-600 text-sm"
-                            aria-label={b.label}
-                          >
-                            <span className="w-5 text-center">
-                              {b.label.includes("Appoint") ? (
-                                <FontAwesomeIcon icon={faCalendarCheck} />
-                              ) : b.label.includes("Record") ||
-                                b.label.includes("Medical") ? (
-                                <FontAwesomeIcon icon={faFileMedicalAlt} />
-                              ) : b.label.includes("Patient") ? (
-                                <FontAwesomeIcon icon={faUsers} />
-                              ) : b.label.includes("Users") ? (
-                                <FontAwesomeIcon icon={faUser} />
-                              ) : b.label.includes("Audits") ? (
-                                <FontAwesomeIcon icon={faClipboard} />
-                              ) : b.label.includes("DB") ? (
-                                <FontAwesomeIcon icon={faDatabase} />
-                              ) : b.label.includes("Profile") ? (
-                                <FontAwesomeIcon icon={faIdBadge} />
-                              ) : b.label.includes("Settings") ? (
-                                <FontAwesomeIcon icon={faCog} />
-                              ) : b.label.includes("Overview") ? (
-                                <FontAwesomeIcon icon={faListAlt} />
-                              ) : (
-                                <FontAwesomeIcon icon={faClipboardList} />
-                              )}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              )}
-            </nav>
-          </div>
-        )}
+        <div className="w-full mt-3">
+          <nav aria-label="Sidebar" className="space-y-4">
+            {Object.entries(sections).map(([sectionTitle, items]) => (
+              <div key={sectionTitle} className="mb-4">
+                <div className="text-xs uppercase text-slate-300 font-semibold mb-2">
+                  {open ? sectionTitle : `${sectionTitle.substring(0, 4)}...`}
+                </div>
+                <ul className="space-y-1">
+                  {items.map((b) => (
+                    <li key={b.href}>
+                      <SidebarLink
+                        href={b.href}
+                        label={b.label}
+                        compact={!open}
+                        isActive={isLinkActive(b.href)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
       </div>
     </aside>
   );
