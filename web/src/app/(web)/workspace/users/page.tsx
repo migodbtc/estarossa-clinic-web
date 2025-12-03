@@ -54,18 +54,6 @@ export default function Page() {
         currentHref="/workspace/users"
       />
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold">Users</h2>
-            <p className="mt-1 text-sm text-slate-700">
-              Manage application users and roles.
-            </p>
-          </div>
-          <div>
-            <Button onClick={() => setOpen(true)}>Create user</Button>
-          </div>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">

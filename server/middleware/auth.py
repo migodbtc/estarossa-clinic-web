@@ -20,12 +20,8 @@ jwt = JWTManager(app)
 
 
 def store_jti(auth_id: int, jti: str, expires_at_str: str) -> int:
-    """Store a refresh token jti for `auth_id` in the `refresh_tokens` table.
-
-    This wrapper keeps refresh-token storage local to auth logic and centralizes
-    logging. It returns the created DB id.
-    """
-    _log(f"[auth] STORE jti for auth_id={auth_id} jti={jti}")
+    # function to store the refresh token jti in the mysql database 
+    # usually used in the auth.py resource when issuing a new refresh token
     return controller.create('refresh_tokens', {
         'auth_id': auth_id,
         'refresh_token': jti,
@@ -34,9 +30,16 @@ def store_jti(auth_id: int, jti: str, expires_at_str: str) -> int:
 
 
 def revoke_jti(jti: str) -> int:
-    """Revoke a refresh token by its jti. Returns number of affected rows."""
-    _log(f"[auth] REVOKE jti={jti}")
-    return controller.revoke_refresh_token(jti)
+    # function to revoke the refresh token within mysql database
+    # v1 had a dedicated controller method for this 
+    # v2 logs the case where 2 or more tokens are revoked at once
+    affected = controller.revoke_refresh_token(jti) 
+    if affected > 1:
+        try: 
+            _log(f"[auth][warning] revoked {affected} refresh tokens with jti={jti}")
+        except Exception:
+            pass
+    return affected
 
 
 def find_by_jti(jti: str):

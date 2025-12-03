@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify
-from datetime import datetime, timedelta
+from flask import Blueprint, current_app, make_response, request, jsonify
+from datetime import datetime, timedelta, timezone
 import traceback
 
 import utils
@@ -69,7 +69,9 @@ def login():
         return jsonify({'error': 'invalid credentials'}), 401
 
     identity = user['auth_id']
-    additional_claims = {'role': user.get('role')}
+    # Bind the additional properties of the pinpointed user from the db
+    # To the additional claims as to be used by the Nextjs app
+    additional_claims = {'role': user.get('role'), 'email': user.get('email')}
 
     # Flask-JWT-Extended / PyJWT expect the subject (sub) to be a string.
     identity_str = str(identity)
@@ -78,45 +80,74 @@ def login():
 
     # store the refresh token's jti in DB (do not store the raw token)
     decoded = decode_token(refresh_token)
-    jti = decoded.get('jti')
-    refresh_expires = None
-    try:
-        refresh_expires = bp.root_path and None
-    except Exception:
-        refresh_expires = None
-    expires_at = (datetime.utcnow() + timedelta(days=14))
+    jti = decoded.get('jti') 
+    exp = decoded.get('exp')
+    expires_at = datetime.fromtimestamp(exp, timezone.utc) 
+    # turns out timezone has a utc variable. could be useful in js/ts lol
     expires_at_str = expires_at.strftime('%Y-%m-%d %H:%M:%S')
+
     try:
-        store_jti(identity, jti, expires_at_str)
+        store_jti(auth_id=identity, jti=jti, expires_at_str=expires_at_str)
     except Exception:
         try:
             utils._log(f"[auth] failed to store jti for user {identity}")
         except Exception:
             pass
 
-    return jsonify({
-        'access_token': access_token,
-        'refresh_token': refresh_token,
-        'token_type': 'bearer',
-    })
+    # copilot told me to opt for make_response instead of standard json 
+    # im assuming its because make_response allows for better config?
+    resp = make_response(
+        jsonify(
+            {
+                'access_token': access_token,
+                'token_type': 'bearer',
+            }
+        )
+    )
+    # this is probably for returning the access token 
+
+    # setting a cookie + config properties like secure flag and samesite
+    # specifically for the refresh token
+    cookie_name = current_app.config.get('JWT_REFRESH_COOKIE_NAME', 'refresh_token') # default name
+    secure_flag = current_app.config.get('JWT_COOKIE_SECURE', False) # True or False
+    samesite = current_app.config.get('JWT_COOKIE_SAMESITE', 'Lax') # Lax, Strict, None
+
+    resp.set_cookie(
+        cookie_name,
+        refresh_token, 
+        httponly=True,
+        secure=secure_flag,
+        samesite=samesite,
+        expires=expires_at,
+        path='/'
+    )
 
 
 @bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
+@jwt_required(refresh=True, locations=['cookies'])
 def refresh():
+    # basic endpoint for refresh: get jwt identity
+    # then make a new access token for that identity
+    # and return that easy
     identity = get_jwt_identity()
     new_access = create_access_token(identity=identity)
     return jsonify({'access_token': new_access})
 
-
 @bp.route('/logout', methods=['POST'])
-@jwt_required(refresh=True)
+@jwt_required(refresh=True, locations=['cookies'])
 def logout():
     jwt_payload = get_jwt()
     jti = jwt_payload.get('jti')
+    
+    # check if its a valid token by checking JWT identity authenticity
+    # or so i think
     if not jti:
         return jsonify({'error': 'invalid token'}), 400
+
+
     affected = revoke_jti(jti)
     if affected:
+        # case where there is 1 or more token revoked 
         return jsonify({'revoked': True})
+    # case where there are no tokens revoked
     return jsonify({'revoked': False}), 400
