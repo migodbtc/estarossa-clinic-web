@@ -1,13 +1,18 @@
 import { Role } from "@/types/db/enums";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { initialMockUser } from "@/constants/mock";
 import { AuthenticatedUser } from "@/types/models/user";
+import { useMockUser } from "@/contexts/MockUserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const MockUserOverlay = () => {
-  const [mockUser, setMockUser] = useState<AuthenticatedUser>(initialMockUser);
+  const { user: mockUserCtx, setUser } = useMockUser();
+  const [mockUser, setMockUser] = useState<AuthenticatedUser>(mockUserCtx);
   const [overlayOpen, setOverlayOpen] = useState(false);
+
+  // keep local edit state synced if provider changes externally
+  useEffect(() => setMockUser(mockUserCtx), [mockUserCtx]);
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -52,6 +57,29 @@ const MockUserOverlay = () => {
               }
               className="w-full mb-2 rounded border px-2 py-1 text-sm border-none"
             />
+
+            <div className="flex gap-2 mt-2">
+              <button
+                className="px-3 py-1 rounded bg-slate-600 text-white"
+                onClick={() => {
+                  // persist edits to the shared context so components re-render
+                  setUser(mockUser);
+                  setOverlayOpen(false);
+                }}
+              >
+                Save
+              </button>
+
+              <button
+                className="px-3 py-1 rounded bg-white border"
+                onClick={() => {
+                  setMockUser(mockUserCtx);
+                  setOverlayOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         ) : null}
 

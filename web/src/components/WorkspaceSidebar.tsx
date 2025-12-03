@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { Role } from "@/types/db/enums";
 import { useSidebar } from "@/contexts/WorkspaceSidebarContext";
+import { useMockUserOptional } from "@/contexts/MockUserContext";
 import React, { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
@@ -150,10 +151,13 @@ export default function WorkspaceSidebar({
 }: WorkspaceSidebarProps) {
   const { open } = useSidebar();
   const pathname = usePathname() || "/";
+  // read role from mock user provider when available so updates trigger re-render
+  const optional = useMockUserOptional();
+  const roleToUse = (optional?.user?.role as Role) ?? role;
 
   const sections = useMemo(() => {
-    return ROLE_BUTTONS[role as string] ?? ROLE_BUTTONS["patient"];
-  }, [role]);
+    return ROLE_BUTTONS[roleToUse as string] ?? ROLE_BUTTONS["patient"];
+  }, [roleToUse]);
 
   const cleanPathName = (p: string) =>
     p === "/" ? "/" : p.replace(/\/+$/, "");

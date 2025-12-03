@@ -29,7 +29,7 @@ const WorkspaceHeader = () => {
             <button
               aria-label="Telephone"
               title="Call"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 hover:cursor-pointer"
             >
               <FontAwesomeIcon icon={faPhone} />
             </button>
@@ -37,7 +37,7 @@ const WorkspaceHeader = () => {
             <button
               aria-label="Info"
               title="Info"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 hover:cursor-pointer"
             >
               <FontAwesomeIcon icon={faCircleInfo} />
             </button>
@@ -46,7 +46,7 @@ const WorkspaceHeader = () => {
               aria-label="Sign out"
               title="Sign out"
               type="button"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-red-300 hover:text-red-600 hover:bg-red-50"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-md text-red-300 hover:text-red-600 hover:bg-red-50 hover:cursor-pointer"
             >
               <FontAwesomeIcon icon={faSignOutAlt} />
             </button>
