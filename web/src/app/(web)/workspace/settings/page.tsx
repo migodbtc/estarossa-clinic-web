@@ -1,10 +1,14 @@
+import WorkspaceTitle from "@/components/WorkspaceTitle";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Settings</h1>
-      <p className="mt-2 text-sm text-slate-700">
-        Application preferences and features.
-      </p>
-    </div>
+    <section className="w-full h-[75vh] ">
+      <WorkspaceTitle
+        title="Settings"
+        subtext="Application preferences and features."
+        currentPage="Settings"
+        currentHref="/workspace/settings"
+      />
+    </section>
   );
 }

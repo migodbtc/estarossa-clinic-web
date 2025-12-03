@@ -136,8 +136,9 @@ const SidebarLink = React.memo(
         aria-label={label}
         aria-current={isActive ? "page" : undefined}
       >
-        <span className="w-5 text-center">
-          <FontAwesomeIcon icon={icon} />
+        <span className="w-full text-left flex gap-3">
+          <FontAwesomeIcon icon={icon} className="flex-1 m-auto" />
+          <span className="flex-7">{label}</span>
         </span>
       </Link>
     );

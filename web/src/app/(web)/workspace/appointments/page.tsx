@@ -1,10 +1,14 @@
+import WorkspaceTitle from "@/components/WorkspaceTitle";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Appointments</h1>
-      <p className="mt-2 text-sm text-slate-700">
-        List and manage appointments.
-      </p>
-    </div>
+    <section className="w-full h-[75vh] ">
+      <WorkspaceTitle
+        title="All Appointments"
+        subtext="The list of all available appointments"
+        currentPage="Appointments"
+        currentHref="/workspace/appointments"
+      />
+    </section>
   );
 }

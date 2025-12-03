@@ -1,10 +1,14 @@
+import WorkspaceTitle from "@/components/WorkspaceTitle";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Patients</h1>
-      <p className="mt-2 text-sm text-slate-700">
-        Patient directory and quick view.
-      </p>
-    </div>
+    <section className="w-full h-[75vh] ">
+      <WorkspaceTitle
+        title="Patients"
+        subtext="Patient directory and quick view."
+        currentPage="Patients"
+        currentHref="/workspace/patients"
+      />
+    </section>
   );
 }

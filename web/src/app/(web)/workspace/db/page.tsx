@@ -1,10 +1,14 @@
+import WorkspaceTitle from "@/components/WorkspaceTitle";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">DB Console</h1>
-      <p className="mt-2 text-sm text-slate-700">
-        Administration and quick queries.
-      </p>
-    </div>
+    <section className="w-full h-[75vh] ">
+      <WorkspaceTitle
+        title="DB Console"
+        subtext="Administration and quick queries."
+        currentPage="DB"
+        currentHref="/workspace/db"
+      />
+    </section>
   );
 }

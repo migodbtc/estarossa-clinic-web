@@ -1,10 +1,14 @@
+import WorkspaceTitle from "@/components/WorkspaceTitle";
+
 export default function Page() {
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Profile</h1>
-      <p className="mt-2 text-sm text-slate-700">
-        Edit your profile and contact details.
-      </p>
-    </div>
+    <section className="w-full h-[75vh] ">
+      <WorkspaceTitle
+        title="Profile"
+        subtext="Edit your profile and contact details."
+        currentPage="Profile"
+        currentHref="/workspace/profile"
+      />
+    </section>
   );
 }
