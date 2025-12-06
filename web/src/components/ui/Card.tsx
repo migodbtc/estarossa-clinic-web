@@ -37,7 +37,7 @@ export const CardHeader: React.FC<SectionProps> = ({
 }) => {
   return (
     <header
-      className={`flex items-center justify-between px-4 py-4 border-b border-b-slate-300 ${className}`}
+      className={`flex items-center justify-between px-4 py-4 ${className}`}
     >
       {children}
     </header>
@@ -48,7 +48,7 @@ export const CardContent: React.FC<SectionProps> = ({
   children,
   className = "",
 }) => {
-  return <div className={`mt-4 px-4 py-2 flex-1${className}`}>{children}</div>;
+  return <div className={`px-4 py-2 flex-1${className}`}>{children}</div>;
 };
 
 export const CardFooter: React.FC<SectionProps> = ({

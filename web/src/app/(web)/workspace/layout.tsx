@@ -24,18 +24,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <MockUserProvider>
       <SidebarProvider initialOpen={true}>
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex bg-white">
           <WorkspaceSidebar />
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col overflow-auto">
             <WorkspaceHeader />
-            <main className="flex-1 overflow-auto">
-              <div className="w-full">
-                <section className="flex-1">
-                  <div className="w-full bg-white text-slate-900 p-6 flex flex-col overflow-auto min-h-[90vh]">
-                    {children}
-                  </div>
-                </section>
-              </div>
+            <main className="w-full flex-1 pb-4 bg-white">
+              <div className="w-full h-auto text-slate-900 p-6">{children}</div>
             </main>
           </div>
 
