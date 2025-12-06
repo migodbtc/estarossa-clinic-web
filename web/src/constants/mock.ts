@@ -8,8 +8,8 @@ export const initialMockUser: AuthenticatedUser = {
   profile_id: 1,
   full_name: "Site Admin",
   birthdate: null,
-  sex: null,
-  address: null,
+  sex: "male",
+  address: "7339 Long Beach Island, California Garden, Mandaluyong City",
   contact_number: "555-0100",
   specialization: "",
 };
