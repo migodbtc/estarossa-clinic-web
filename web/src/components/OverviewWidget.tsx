@@ -22,9 +22,7 @@ export const OverviewWidget = ({
       aria-label={ariaLabel || title}
       className={`relative h-[20vh] bg-white rounded-xl border flex flex-col overflow-hidden border-slate-300 ${className}`}
     >
-      <span className="text-slate-700 text-md px-4 py-2 border-b border-b-slate-300">
-        {title}
-      </span>
+      <span className="text-slate-700 text-md px-4 py-2 ">{title}</span>
       {main ? (
         <p className="flex-1 text-2xl font-bold text-slate-700 px-4 justify-left items-center flex">
           {main}
