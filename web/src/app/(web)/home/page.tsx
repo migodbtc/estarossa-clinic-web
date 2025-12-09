@@ -2,47 +2,78 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
+  faBookOpen,
+  faChalkboardTeacher,
+  faCheckCircle,
+  faChevronDown,
+  faCircle,
+  faHospital,
   faInfo,
   faInfoCircle,
+  faLaptopCode,
+  faUserGraduate,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-800">
-      <header className="w-full shadow-sm" role="banner">
+    <div className="min-h-screen flex flex-col bg-white text-slate-100">
+      {/* Header */}
+      <header className="absolute top-0 left-0 w-full z-30 " role="banner">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 w-full">
-            <div className="text-xl font-semibold brand-primary">Estarossa</div>
+          <div className="flex items-center justify-between h-16 w-full space-x-2">
+            <div className="w-8 h-8 bg-[#22c55e] rounded-xl flex flex-col justify-center items-center">
+              <FontAwesomeIcon
+                icon={faHospital}
+                className="w-4 h-4 text-white"
+              />
+            </div>
+            <div className="text-xl font-semibold">Estarossa</div>
 
             {/* Centered nav */}
-            <div className="hidden md:flex flex-1 justify-left ml-8">
+            <div className="hidden md:flex flex-1 justify-center ml-8 ">
               <nav
-                className="flex space-x-6 text-sm"
+                className="flex space-x-2 text-sm"
                 aria-label="Main navigation"
               >
-                <a className="brand-primary hover:text-slate-900" href="#hero">
+                <a
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
+                  href="#hero"
+                >
                   Home
                 </a>
-                <a className="brand-primary hover:text-slate-900" href="#about">
+                <a
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
+                  href="#about"
+                >
                   About
                 </a>
-                <a className="brand-primary hover:text-slate-900" href="#hero">
+                <a
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
+                  href="#hero"
+                >
                   Technologies
                 </a>
-                <a className="brand-primary hover:text-slate-900" href="#staff">
+                <a
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
+                  href="#staff"
+                >
                   Staff
                 </a>
                 <a
-                  className="brand-primary hover:text-slate-900"
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
                   href="#services"
                 >
                   Services
                 </a>
-                <a className="brand-primary hover:text-slate-900" href="#hero">
+                <a
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
+                  href="#hero"
+                >
                   Location
                 </a>
                 <a
-                  className="brand-primary hover:text-slate-900"
+                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
                   href="#contact"
                 >
                   Contact
@@ -55,7 +86,7 @@ const HomePage = () => {
               <a href="/login" className="inline-block">
                 <span
                   role="button"
-                  className="inline-flex items-center justify-center min-w-32 rounded-xl px-4 py-2 text-sm btn-brand"
+                  className="bg-[#22c55e] text-white font-semibold inline-flex items-center justify-center min-w-24 rounded-xl px-4 py-1 hover:cursor-pointer transform hover:scale-105 hover:bg-[#4ade80] transition"
                 >
                   Login
                 </span>
@@ -64,7 +95,7 @@ const HomePage = () => {
               <a href="/signup" className="inline-block">
                 <span
                   role="button"
-                  className="inline-flex items-center justify-center min-w-32 rounded-xl px-4 py-2 text-sm btn-outline-brand"
+                  className="border-2 border-[#22c55e] text-[#22c55e] font-semibold inline-flex items-center justify-center min-w-24 rounded-xl px-4 py-1 hover:cursor-pointer transform hover:scale-105 hover:border-[#4ade80] hover:bg-[#4ade80] hover:text-white  transition"
                 >
                   Sign Up
                 </span>
@@ -77,63 +108,139 @@ const HomePage = () => {
       </header>
 
       <main className="flex-1">
-        <section
-          id="hero"
-          className="relative py-20 min-h-[80vh] flex items-center"
-        >
-          {/* Simplified hero: neutral background with centered content. Image/overlay removed. */}
-          <div className="mx-auto max-w-7xl px-8 sm:px-12 lg:px-16 w-full">
-            <div className="max-w-3xl text-left">
-              <h1 className="text-4xl sm:text-3xl lg:text-5xl font-extrabold brand-primary">
-                The campus-wide clinical assistance you can trust
-              </h1>
-              <p className="mt-4 text-lg text-slate-800">
-                Estarossa is the web solution for students who need assistance,
-                nurses who want to manage their patients better, and doctors who
-                want to streamline their workflow. All in one place, all in one
-                platform.
-              </p>
+        {/* Hero Section */}
+        <section id="hero" className="bg-hero-section">
+          <div className="relative py-20 min-h-screen flex items-center bg-linear-to-r from-slate-900 to-slate-900/50">
+            <div className="mx-auto max-w-7xl px-8 sm:px-12 lg:px-16 w-full ">
+              <div className="max-w-3xl text-left">
+                <h1 className="text-4xl sm:text-3xl lg:text-5xl font-extrabold text-[#22c55e]">
+                  The campus-wide clinical assistance you can trust
+                </h1>
+                <p className="mt-4 text-lg text-slate-100">
+                  Estarossa is the web solution for students who need
+                  assistance, nurses who want to manage their patients better,
+                  and doctors who want to streamline their workflow. All in one
+                  place, all in one platform.
+                </p>
 
-              <div className="flex flex-row mt-6 gap-4">
-                <a href="#cta">
-                  <span
-                    role="button"
-                    className="inline-flex items-center justify-center min-w-48 rounded-md px-6 py-3 text-md font-bold btn-brand"
-                  >
-                    Get Started
-                    <FontAwesomeIcon
-                      icon={faArrowRight}
-                      className="ml-3 w-4 h-4 btn-icon text-white"
-                    />
-                  </span>
-                </a>
+                <div className="flex flex-row mt-6 gap-4">
+                  <a href="#cta">
+                    <span
+                      role="button"
+                      className="inline-flex items-center justify-center min-w-48 rounded-xl px-6 py-3 text-md font-bold bg-[#22c55e] text-white hover:cursor-pointer transform hover:scale-105 hover:bg-[#4ade80] transition"
+                    >
+                      Get Started
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="ml-3 w-4 h-4 btn-icon text-white"
+                      />
+                    </span>
+                  </a>
 
-                <a href="#about" className="inline-block">
-                  <span
-                    role="button"
-                    className="inline-flex items-center justify-center min-w-48 rounded-md px-6 py-3 font-medium text-sm btn-outline-brand"
-                  >
-                    Learn More
-                    <FontAwesomeIcon
-                      icon={faInfoCircle}
-                      className="ml-3 w-4 h-4 btn-icon"
-                    />
-                  </span>
-                </a>
+                  <a href="#about" className="inline-block">
+                    <span
+                      role="button"
+                      className="inline-flex items-center justify-center min-w-48 rounded-xl px-6 py-3 font-medium text-sm border-2 border-[#22c55e] text-[#22c55e] hover:cursor-pointer transform hover:scale-105 hover:border-[#4ade80] hover:bg-[#4ade80] hover:text-white  transition"
+                    >
+                      Learn More
+                      <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="ml-3 w-4 h-4 btn-icon"
+                      />
+                    </span>
+                  </a>
+                </div>
               </div>
+            </div>
+            <div className="w-48 h-24 absolute left-1/2 bottom-4 -translate-x-1/2 flex flex-col gap-4 justify-center items-center font-semibold">
+              <span>Scroll for more!</span>
+              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
             </div>
           </div>
         </section>
 
         <section
           id="about"
-          className="py-16 bg-white min-h-[80vh] flex items-center"
+          className="bg-white h-[80vh] flex items-center justify-center"
         >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-semibold brand-primary">About</h2>
-            <p className="mt-3 text-slate-800">
-              Placeholder content for about section.
-            </p>
+          <div className="w-full h-full grid grid-cols-12 gap-4 pt-16 px-8 max-w-7xl">
+            <div className="col-span-6 h-full ">
+              <div
+                id="about_picture"
+                className="w-full h-full flex justify-center items-center relative"
+              >
+                <div className="absolute w-3/5 h-2/4 bg-[#22c55e] rounded-2xl z-0"></div>
+
+                <div className="w-3/4 h-full border-0 img-about-section relative z-10" />
+              </div>
+            </div>
+            <div className="col-span-6 h-full flex flex-col justify-center space-y-2">
+              <span className="font-semibold text-[#22c55e]">About Us</span>
+              <h2 className="font-bold text-3xl text-slate-800">
+                Estarossa's Mission and Vision
+              </h2>
+              <p className="text-slate-600 mb-4 text-justify">
+                Estarossa was built with the vision of providing a solution to
+                the current disarray between digital and physical workflows of
+                Bon Dosco Polytechnic Institute. The system also provides a
+                scalable, manageable, and intuitive control over the flow of
+                information regarding both the students and the medical office
+                of the school.
+              </p>
+              <span className="font-semibold text-slate-600">
+                Quick facts include...
+              </span>
+              <div
+                id="aboutUsQuickFacts"
+                className="w-full grid grid-cols-2 gap-2 mb-6"
+              >
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faUserGraduate}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>Made by BDPI's IT Seniors</span>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faLaptopCode}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>Built with modern technologies</span>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>Approved by OICT office</span>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faBookOpen}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>Finals project for IT420</span>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faChalkboardTeacher}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>Guided by Sir Marfe</span>
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <FontAwesomeIcon
+                    icon={faUsers}
+                    className="text-[#22c55e] w-5 h-5"
+                  />
+                  <span>For Dosconians, By Dosconians</span>
+                </div>
+              </div>
+              <button className="w-fit bg-[#22c55e] rounded-xl px-4 py-2 text-white font-semibold hover:cursor-pointer transform hover:scale-105 hover:bg-[#4ade80] transition">
+                Learn More
+              </button>
+            </div>
           </div>
         </section>
 
