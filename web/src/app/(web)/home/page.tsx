@@ -11,6 +11,7 @@ import {
   faInfo,
   faInfoCircle,
   faLaptopCode,
+  faMinus,
   faUserGraduate,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -472,61 +473,85 @@ const HomePage = () => {
         </section>
       </main>
 
-      <footer className="bg-brand-solid text-slate-100">
+      <footer className="bg-slate-800 text-slate-400">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold brand-primary">
-                Untitled Clinic
+              <h3 className="text-lg font-semibold text-[#22c55e]">
+                Estarossa Web Clinic System
               </h3>
-              <p className="mt-2 text-sm text-slate-100">
-                Small description or address goes here.
+              <p className="mt-2 text-sm text-slate-400">
+                The modern clinic management platform for students, staff, and
+                healthcare professionals at Bon Dosco Polytechnic Institute.
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-medium brand-primary">Links</h4>
+              <h4 className="text-sm font-semibold text-[#22c55e]">
+                Social Media
+              </h4>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
                   <a className="hover:text-brand-accent" href="#hero">
-                    Home
+                    BDPI Official Website
                   </a>
                 </li>
                 <li>
                   <a className="hover:text-brand-accent" href="#features">
-                    Features
+                    BDPI Official Facebook Page
                   </a>
                 </li>
                 <li>
                   <a className="hover:text-brand-accent" href="#about">
-                    About
+                    BDPI Official Linkedin Page
                   </a>
                 </li>
                 <li>
                   <a className="hover:text-brand-accent" href="#contact">
-                    Contact
+                    Lead Developer LinkedIn
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium brand-primary">Legal</h4>
+              <h4 className="text-sm font-semibold text-[#22c55e]">
+                Resources
+              </h4>
               <ul className="mt-3 space-y-2 text-sm">
                 <li>
-                  <a className="hover:text-brand-accent" href="/privacy">
-                    Privacy
+                  <a className="hover:text-brand-accent" href="/about">
+                    About Estarossa
                   </a>
                 </li>
                 <li>
-                  <a className="hover:text-brand-accent" href="/terms">
-                    Terms
+                  <a className="hover:text-brand-accent" href="/services">
+                    Services Overview
+                  </a>
+                </li>
+                <li>
+                  <a className="hover:text-brand-accent" href="/staff">
+                    Meet the Staff
+                  </a>
+                </li>
+                <li>
+                  <a className="hover:text-brand-accent" href="/faq">
+                    Frequently Asked Questions
+                  </a>
+                </li>
+                <li>
+                  <a className="hover:text-brand-accent" href="/contact">
+                    Contact & Support
                   </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t border-brand-secondary pt-6 text-center text-sm text-slate-100">
-            <small>
-              © {new Date().getFullYear()} Untitled Clinic. All rights reserved.
+          <div className="mt-8 border-t border-slate-600 pt-6 text-center text-sm text-slate-400 flex flex-row justify-between">
+            <small className="text-sm">
+              © {new Date().getFullYear()} Estarossa Clinic Web System. All
+              rights reserved.
+            </small>
+            <small className="text-sm">
+              Terms & Conditions • Privacy Policy
             </small>
           </div>
         </div>
