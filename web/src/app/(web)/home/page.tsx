@@ -249,7 +249,7 @@ const HomePage = () => {
         {/* Technical Specs Banner (Moved Below Carousel) */}
         <section
           id="tech"
-          className="w-full bg-brand-hero border-y border-gray-100 py-12 relative z-20"
+          className="w-full bg-slate-100 border-y border-gray-100 py-12 relative z-20"
         >
           <div className="max-w-7xl mx-auto px-8 md:px-16 lg:px-24">
             <div className="flex flex-col justify-center align-middle text-center mb-4">
@@ -261,50 +261,50 @@ const HomePage = () => {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-              <div className="flex flex-col items-center justify-center p-4 text-center hover:bg-brand-accent/20 rounded-xl transition-colors">
+              <div className="flex flex-col items-center justify-center p-4 text-center rounded-xl hover:scale-110 transition">
                 <div className="mb-3">
                   <FontAwesomeIcon
                     icon={faCode}
                     className="w-10 h-10 text-[#22c55e]"
                   />
                 </div>
-                <h3 className="font-bold brand-primary">Next.js</h3>
+                <h3 className="font-bold text-slate-800">Next.js</h3>
                 <p className="text-sm text-slate-800 mt-1">
                   Modern React Framework
                 </p>
               </div>
-              <div className="flex flex-col items-center justify-center p-4 text-center hover:bg-brand-accent/20 rounded-xl transition-colors">
+              <div className="flex flex-col items-center justify-center p-4 text-center rounded-xl hover:scale-110 transition">
                 <div className="mb-3">
                   <FontAwesomeIcon
                     icon={faReact as any}
                     className="w-10 h-10 text-[#22c55e]"
                   />
                 </div>
-                <h3 className="font-bold brand-primary">React</h3>
+                <h3 className="font-bold text-slate-800">React</h3>
                 <p className="text-sm text-slate-800 mt-1">
                   Robust Frontend Library
                 </p>
               </div>
-              <div className="flex flex-col items-center justify-center p-4 text-center hover:bg-brand-accent/20 rounded-xl transition-colors">
+              <div className="flex flex-col items-center justify-center p-4 text-center rounded-xl hover:scale-110 transition">
                 <div className="mb-3">
                   <FontAwesomeIcon
                     icon={faPython as any}
                     className="w-10 h-10 text-[#22c55e]"
                   />
                 </div>
-                <h3 className="font-bold brand-primary">Flask (Python)</h3>
+                <h3 className="font-bold text-slate-800">Flask (Python)</h3>
                 <p className="text-sm text-slate-800 mt-1">
                   High-Performance Backend
                 </p>
               </div>
-              <div className="flex flex-col items-center justify-center p-4 text-center hover:bg-brand-accent/20 rounded-xl transition-colors">
+              <div className="flex flex-col items-center justify-center p-4 text-center rounded-xl hover:scale-110 transition">
                 <div className="mb-3">
                   <FontAwesomeIcon
                     icon={faDatabase}
                     className="w-10 h-10 text-[#22c55e]"
                   />
                 </div>
-                <h3 className="font-bold brand-primary">MySQL Database</h3>
+                <h3 className="font-bold text-slate-800">MySQL Database</h3>
                 <p className="text-sm text-slate-800 mt-1">
                   Secure Data Management
                 </p>
@@ -315,19 +315,109 @@ const HomePage = () => {
 
         <section
           id="staff"
-          className="py-16 bg-white min-h-[80vh] flex items-center"
+          className="py-16 bg-white min-h-[80vh] flex flex-col items-center"
         >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-semibold brand-primary">Staff</h2>
-            <p className="mt-3 text-slate-800">
-              Placeholder for staff or team listing.
+          <div className="mb-8 text-center">
+            <span className="font-semibold text-[#22c55e]">Staff</span>
+            <h2 className="font-bold mb-2 text-3xl text-slate-800">
+              Meet the People of Estarossa
+            </h2>
+            <p className="w-2xl text-slate-600 text-justify">
+              Estarossa is not only the system that simplifies and automates,
+              but also the people that are involved within the usage of the
+              system. Meet the staff below!
             </p>
+          </div>
+          <div className="w-7xl h-auto mx-auto mb-8 grid grid-cols-3 grid-rows-2 gap-8 ">
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/doc1.jpeg')] bg-center bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Serving people for 15 years as a doctor, now I am able to
+                    serve back to my alma mater!"
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Dr. Sundar Pragataryu, MD, DNB, FIAP
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/doc2.jpeg')] bg-center bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Every child deserves a champion. My passion is helping
+                    Colorado's kids grow up healthy and strong."
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Dr. Jackson Carter, MD, FAAP, MPH
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/doc3.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Caring for children is not just my job, it's my calling.
+                    Proud to serve Taiwan's next generation."
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Dr. Mei-Ling Hsu, MD, PhD, FIAP
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/nurse1.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Nursing is about compassion and connection. I am honored to
+                    care for our diverse community."
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Layla Benali, RN, CPN
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/nurse2.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Every day is a new opportunity to make a difference in a
+                    child's life."
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Emily Thompson, RN, BSN, CPN
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="w-full h-96 bg-[url('/img/home/nurse3.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
+                <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
+                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                    "Caring for children and families is my greatest joy."
+                  </p>
+                  <h2 className="font-bold text-slate-800 text-sm">
+                    Sarah Williams, RN, MSN
+                  </h2>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <section
           id="services"
-          className="py-16 bg-white min-h-[80vh] flex items-center"
+          className="py-16 bg-slate-100 min-h-[80vh] flex items-center"
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-semibold brand-primary">Services</h2>
