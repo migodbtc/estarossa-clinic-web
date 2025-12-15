@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -6,6 +8,8 @@ import {
   faChalkboardTeacher,
   faCheckCircle,
   faChevronDown,
+  faChevronLeft,
+  faChevronRight,
   faCircle,
   faHospital,
   faInfo,
@@ -19,6 +23,35 @@ import { faReact, faPython } from "@fortawesome/free-brands-svg-icons";
 import { faDatabase, faCode } from "@fortawesome/free-solid-svg-icons";
 
 const HomePage = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const carouselSlides = [
+    {
+      title: "Service One",
+      text: "This is a placeholder for the first service. Add your content here.",
+    },
+    {
+      title: "Service Two",
+      text: "This is a placeholder for the second service. Add your content here.",
+    },
+    {
+      title: "Service Three",
+      text: "This is a placeholder for the third service. Add your content here.",
+    },
+  ];
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? carouselSlides.length - 1 : prev - 1
+    );
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === carouselSlides.length - 1 ? 0 : prev + 1
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-100">
       {/* Header */}
@@ -329,16 +362,16 @@ const HomePage = () => {
               system. Meet the staff below!
             </p>
           </div>
-          <div className="w-7xl h-auto mx-auto mb-8 grid grid-cols-3 grid-rows-2 gap-8 ">
+          <div className="w-4xl h-auto mx-auto mb-8 grid grid-cols-3 grid-rows-2 gap-8 ">
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/doc1.jpeg')] bg-center bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Serving people for 15 years as a doctor, now I am able to
                     serve back to my alma mater!"
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Dr. Sundar Pragataryu, MD, DNB, FIAP
                   </h2>
                 </div>
@@ -347,12 +380,12 @@ const HomePage = () => {
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/doc2.jpeg')] bg-center bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Every child deserves a champion. My passion is helping
                     Colorado's kids grow up healthy and strong."
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Dr. Jackson Carter, MD, FAAP, MPH
                   </h2>
                 </div>
@@ -361,12 +394,12 @@ const HomePage = () => {
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/doc3.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Caring for children is not just my job, it's my calling.
                     Proud to serve Taiwan's next generation."
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Dr. Mei-Ling Hsu, MD, PhD, FIAP
                   </h2>
                 </div>
@@ -375,12 +408,12 @@ const HomePage = () => {
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/nurse1.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Nursing is about compassion and connection. I am honored to
                     care for our diverse community."
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Layla Benali, RN, CPN
                   </h2>
                 </div>
@@ -389,12 +422,12 @@ const HomePage = () => {
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/nurse2.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Every day is a new opportunity to make a difference in a
                     child's life."
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Emily Thompson, RN, BSN, CPN
                   </h2>
                 </div>
@@ -403,11 +436,11 @@ const HomePage = () => {
             <div className="">
               <div className="w-full h-96 bg-[url('/img/home/nurse3.jpg')] bg-top bg-cover rounded-2xl flex items-center relative overflow-hidden border-2 border-slate-200 transform hover:scale-105 hover:cursor-pointer transition">
                 <div className="w-full h-full p-4 bg-linear-to-t from-slate-800 to-transparent"></div>
-                <div className="w-[80%] h-32 p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
-                  <p className="w-auto text-sm text-slate-600 text-justify mb-2 italic">
+                <div className="w-[80%] p-4 px-6 bg-white rounded-2xl absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col justify-center text-center items-center">
+                  <p className="w-auto text-xs text-slate-600 text-justify mb-2 italic">
                     "Caring for children and families is my greatest joy."
                   </p>
-                  <h2 className="font-bold text-slate-800 text-sm">
+                  <h2 className="font-bold text-slate-800 text-xs">
                     Sarah Williams, RN, MSN
                   </h2>
                 </div>
@@ -418,13 +451,77 @@ const HomePage = () => {
 
         <section
           id="services"
-          className="py-16 bg-slate-100 min-h-[80vh] flex items-center"
+          className=" bg-slate-100 h-auto flex flex-col items-center py-8 pb-16"
         >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-semibold brand-primary">Services</h2>
-            <p className="mt-3 text-slate-800">
-              Placeholder for services provided.
+          <div className="mb-8 text-center">
+            <span className="font-semibold text-[#22c55e]">Services</span>
+            <h2 className="font-bold mb-2 text-3xl text-slate-800">
+              See How Estarossa Can Help You
+            </h2>
+            <p className="w-2xl text-slate-600 text-justify">
+              Estarossa is not only the system that simplifies and automates,
+              but also the people that are involved within the usage of the
+              system. Meet the staff below!
             </p>
+          </div>
+          <div className="mx-auto max-w-5xl px-auto w-full h-full flex flex-col items-center justify-center">
+            <div className="relative w-full h-[60vh] flex items-center justify-center">
+              {/* Left Arrow */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 text-[#22c55e] p-3 hover:cursor-pointer transition hover:text-green-400 hover:scale-110"
+                aria-label="Previous Slide"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} size="3x" />
+              </button>
+              {/* Carousel Slides */}
+              <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
+                {carouselSlides.map((slide, idx) => (
+                  <div
+                    key={idx}
+                    className={`
+                    absolute w-full h-full flex flex-col items-center justify-center
+                    transition-all duration-700 ease-in-out
+                    bg-slate-300 rounded-xl
+                    ${
+                      idx === currentSlide
+                        ? "opacity-100 scale-100 z-20"
+                        : "opacity-0 scale-95 z-0 pointer-events-none"
+                    }
+                  `}
+                  >
+                    <h3 className="text-3xl font-bold text-[#22c55e] mb-4">
+                      {slide.title}
+                    </h3>
+                    <p className="text-lg text-slate-700 text-center max-w-2xl">
+                      {slide.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              {/* Right Arrow */}
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 text-[#22c55e] p-3 hover:cursor-pointer transition hover:text-green-400 hover:scale-110"
+                aria-label="Next Slide"
+              >
+                <FontAwesomeIcon icon={faChevronRight} size="3x" />
+              </button>
+              {/* Dots */}
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+                {carouselSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-2 h-2 rounded-full border-2 border-[#22c55e] transition-all duration-300 focus:outline-none
+        ${idx === currentSlide ? "bg-[#22c55e] scale-110 shadow" : "bg-white"}
+      `}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    type="button"
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
