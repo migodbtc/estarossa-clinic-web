@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, memo, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
@@ -23,34 +23,104 @@ import { faReact, faPython } from "@fortawesome/free-brands-svg-icons";
 import { faDatabase, faCode } from "@fortawesome/free-solid-svg-icons";
 
 const HomePage = () => {
+  // SERVICES CAROUSEL SLIDES
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [prevSlide, setPrevSlide] = useState<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const carouselSlides = [
     {
-      title: "Service One",
-      text: "This is a placeholder for the first service. Add your content here.",
+      title: "Online Appointment Booking",
+      text: "Connection between students and medical staff is easier with online appointment scheduling through the platform, with real-time availability and automated reminders.",
+      image: "/img/home/service_1.jpg",
     },
     {
-      title: "Service Two",
-      text: "This is a placeholder for the second service. Add your content here.",
+      title: "Track Medical Records",
+      text: "Securely view and download medical records such as vaccination history and past visit summaries, all in one web application.",
+      image: "/img/home/service_2.jpg",
     },
     {
-      title: "Service Three",
-      text: "This is a placeholder for the third service. Add your content here.",
+      title: "Health Announcements & Notifications",
+      text: "Receive timely updates about campus health advisories, vaccination drives, and clinic schedules via the web portal and email notifications.",
+      image: "/img/home/service_3.jpg",
+    },
+    {
+      title: "Symptom Checker & Triage",
+      text: "Use an interactive tool to input symptoms and receive guidance on whether to visit the clinic, self-care tips, or emergency instructions, streamlining clinic visits.",
+      image: "/img/home/service_4.jpg",
+    },
+    {
+      title: "Wellness Resources & Teleconsultation",
+      text: "Access curated health articles, mental wellness resources, and book virtual consultations with clinic staff for non-urgent concerns.",
+      image: "/img/home/service_5.jpg",
     },
   ];
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) =>
-      prev === 0 ? carouselSlides.length - 1 : prev - 1
-    );
+  const goToSlide = (idx: number) => {
+    if (idx === currentSlide) return;
+    setPrevSlide(currentSlide);
+    setCurrentSlide(idx);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setPrevSlide(null), 700);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) =>
-      prev === carouselSlides.length - 1 ? 0 : prev + 1
+  const prev = () =>
+    goToSlide(
+      currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1
     );
-  };
+  const next = () => goToSlide((currentSlide + 1) % carouselSlides.length);
+
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    },
+    []
+  );
+
+  const CarouselSlide = memo(
+    ({
+      slide,
+      active,
+      className = "",
+    }: {
+      slide: (typeof carouselSlides)[0];
+      active: boolean;
+      className?: string;
+    }) => (
+      <div
+        style={{ backgroundImage: `url('${slide.image}')` }}
+        className={`absolute w-full h-full flex flex-col items-center justify-center transition-opacity duration-700 bg-top bg-cover
+        ${active ? "opacity-100" : "opacity-0"}
+        ${className}
+      `}
+      >
+        <div className="w-[70%] h-full bg-emerald-200 flex flex-col justify-center items-center">
+          <h3 className="w-full text-3xl font-bold text-[#22c55e] mb-4 bg-red-300">
+            {slide.title}
+          </h3>
+          <p className="w-full text-lg text-slate-700 text-center bg-yellow-300">
+            {slide.text}
+          </p>
+        </div>
+      </div>
+    )
+  );
+
+  // Usage:
+  {
+    prevSlide !== null && prevSlide !== currentSlide && (
+      <CarouselSlide
+        slide={carouselSlides[prevSlide]}
+        active={false}
+        className="z-30 pointer-events-none"
+      />
+    );
+  }
+  <CarouselSlide
+    slide={carouselSlides[currentSlide]}
+    active={true}
+    className="z-20"
+  />;
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-100">
@@ -451,7 +521,7 @@ const HomePage = () => {
 
         <section
           id="services"
-          className=" bg-slate-100 h-auto flex flex-col items-center py-8 pb-16"
+          className=" bg-slate-100 h-auto flex flex-col items-center pt-8"
         >
           <div className="mb-8 text-center">
             <span className="font-semibold text-[#22c55e]">Services</span>
@@ -464,11 +534,11 @@ const HomePage = () => {
               system. Meet the staff below!
             </p>
           </div>
-          <div className="mx-auto max-w-5xl px-auto w-full h-full flex flex-col items-center justify-center">
-            <div className="relative w-full h-[60vh] flex items-center justify-center">
+          <div className="w-full px-auto h-full flex flex-col items-center justify-center">
+            <div className="relative w-full h-[70vh] flex items-center justify-center">
               {/* Left Arrow */}
               <button
-                onClick={prevSlide}
+                onClick={prev}
                 className="absolute left-4 top-1/2 -translate-y-1/2 z-30 text-[#22c55e] p-3 hover:cursor-pointer transition hover:text-green-400 hover:scale-110"
                 aria-label="Previous Slide"
               >
@@ -476,32 +546,26 @@ const HomePage = () => {
               </button>
               {/* Carousel Slides */}
               <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
-                {carouselSlides.map((slide, idx) => (
-                  <div
-                    key={idx}
-                    className={`
-                    absolute w-full h-full flex flex-col items-center justify-center
-                    transition-all duration-700 ease-in-out
-                    bg-slate-300 rounded-xl
-                    ${
-                      idx === currentSlide
-                        ? "opacity-100 scale-100 z-20"
-                        : "opacity-0 scale-95 z-0 pointer-events-none"
-                    }
-                  `}
-                  >
-                    <h3 className="text-3xl font-bold text-[#22c55e] mb-4">
-                      {slide.title}
-                    </h3>
-                    <p className="text-lg text-slate-700 text-center max-w-2xl">
-                      {slide.text}
-                    </p>
-                  </div>
-                ))}
+                {/* Previous slide (fading out, on top) */}
+                {prevSlide !== null && prevSlide !== currentSlide && (
+                  <CarouselSlide
+                    slide={carouselSlides[prevSlide]}
+                    active={false}
+                    // z-30 and pointer-events-none for proper fade
+                    className="z-30 pointer-events-none"
+                  />
+                )}
+                {/* Current slide (fading in, below) */}
+                <CarouselSlide
+                  slide={carouselSlides[currentSlide]}
+                  active={true}
+                  // z-20 for stacking order
+                  className="z-20"
+                />
               </div>
               {/* Right Arrow */}
               <button
-                onClick={nextSlide}
+                onClick={next}
                 className="absolute right-4 top-1/2 -translate-y-1/2 z-30 text-[#22c55e] p-3 hover:cursor-pointer transition hover:text-green-400 hover:scale-110"
                 aria-label="Next Slide"
               >
@@ -512,10 +576,14 @@ const HomePage = () => {
                 {carouselSlides.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setCurrentSlide(idx)}
+                    onClick={() => goToSlide(idx)}
                     className={`w-2 h-2 rounded-full border-2 border-[#22c55e] transition-all duration-300 focus:outline-none
-        ${idx === currentSlide ? "bg-[#22c55e] scale-110 shadow" : "bg-white"}
-      `}
+            ${
+              idx === currentSlide
+                ? "bg-[#22c55e] scale-110 shadow"
+                : "bg-white"
+            }
+          `}
                     aria-label={`Go to slide ${idx + 1}`}
                     type="button"
                   />
