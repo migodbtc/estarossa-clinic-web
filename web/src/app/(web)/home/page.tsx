@@ -20,6 +20,7 @@ import {
   faMinus,
   faPhone,
   faUserGraduate,
+  faUserPlus,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { faReact, faPython } from "@fortawesome/free-brands-svg-icons";
@@ -575,7 +576,7 @@ const HomePage = () => {
 
         <section
           id="location"
-          className="pt-16 bg-brand-accent/10 h-[80vh] flex items-center"
+          className="py-16 bg-brand-accent/10 h-screen flex items-center"
         >
           <div className="w-6xl h-full mx-auto grid grid-cols-2 gap-8">
             <div className="h-full flex flex-col justify-center items-start">
@@ -643,21 +644,34 @@ const HomePage = () => {
         </section>
         <section
           id="cta"
-          className="py-16 bg-brand-solid text-white min-h-[80vh] flex items-center"
+          className="bg-cta-section text-white h-screen flex items-center"
         >
-          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold brand-primary">
-              Ready to get started?
-            </h2>
-            <p className="mt-3 text-slate-100">
-              Call-to-action placeholder at the bottom of the main content.
-            </p>
-            <a
-              href="/register"
-              className="mt-6 inline-block rounded-md bg-white px-6 py-3 brand-primary font-medium hover:bg-brand-accent/20"
-            >
-              Register Now
-            </a>
+          <div className="w-full h-full bg-slate-900/70 backdrop-blur-md flex items-center">
+            <div className="mx-auto max-w-3xl px-8 text-center flex flex-col gap-4">
+              <span className="font-semibold text-[#22c55e]">
+                Get Started Today
+              </span>
+              <h2 className="font-bold text-3xl text-slate-200">
+                Experience Hassle-Free Healthcare on Campus
+              </h2>
+              <p className="text-slate-400 text-justify">
+                Join Estarossa Clinic and unlock a new level of convenience,
+                care, and connection. Book appointments online, access your
+                medical records anytime, and stay updated with the latest health
+                announcements—all in one secure platform. Take charge of your
+                well-being and make every clinic visit easier than ever.
+              </p>
+              <a
+                href="/register"
+                className="w-fit mx-auto inline-block rounded-xl bg-[#22c55e] px-6 py-3 font-bold text-white transform hover:scale-110 hover:bg-[#4ade80] transition"
+              >
+                <FontAwesomeIcon
+                  icon={faUserPlus}
+                  className="w-4 h-4 text-white mr-2"
+                />{" "}
+                Register Now – It’s Free!
+              </a>
+            </div>
           </div>
         </section>
       </main>

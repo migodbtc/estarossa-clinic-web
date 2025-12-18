@@ -140,6 +140,13 @@ body {
   background-repeat: no-repeat;
 }
 
+.bg-cta-section {
+  background-image: url("/img/home/cta_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .img-about-section {
   background-image: url("/img/home/doctor_about_section.png");
   background-size: cover;
