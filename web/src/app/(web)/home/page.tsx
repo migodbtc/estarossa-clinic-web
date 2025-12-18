@@ -11,11 +11,14 @@ import {
   faChevronLeft,
   faChevronRight,
   faCircle,
+  faEnvelope,
   faHospital,
   faInfo,
   faInfoCircle,
   faLaptopCode,
+  faMapPin,
   faMinus,
+  faPhone,
   faUserGraduate,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -89,38 +92,24 @@ const HomePage = () => {
     }) => (
       <div
         style={{ backgroundImage: `url('${slide.image}')` }}
-        className={`absolute w-full h-full flex flex-col items-center justify-center transition-opacity duration-700 bg-top bg-cover
+        className={`absolute w-full h-full flex flex-col items-center justify-center transition-opacity duration-700 bg-top bg-cover bg-slate-900
         ${active ? "opacity-100" : "opacity-0"}
         ${className}
       `}
       >
-        <div className="w-[70%] h-full bg-emerald-200 flex flex-col justify-center items-center">
-          <h3 className="w-full text-3xl font-bold text-[#22c55e] mb-4 bg-red-300">
-            {slide.title}
-          </h3>
-          <p className="w-full text-lg text-slate-700 text-center bg-yellow-300">
-            {slide.text}
-          </p>
+        <div className="w-full h-full bg-slate-900/70 backdrop-blur-sm">
+          <div className="w-[70%] h-full  flex flex-col justify-center items-center mx-auto">
+            <h3 className="w-full text-3xl font-bold text-[#22c55e] mb-4 text-center ">
+              {slide.title}
+            </h3>
+            <p className="w-2xl text-lg text-white text-center ">
+              {slide.text}
+            </p>
+          </div>
         </div>
       </div>
     )
   );
-
-  // Usage:
-  {
-    prevSlide !== null && prevSlide !== currentSlide && (
-      <CarouselSlide
-        slide={carouselSlides[prevSlide]}
-        active={false}
-        className="z-30 pointer-events-none"
-      />
-    );
-  }
-  <CarouselSlide
-    slide={carouselSlides[currentSlide]}
-    active={true}
-    className="z-20"
-  />;
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-100">
@@ -177,12 +166,6 @@ const HomePage = () => {
                   href="#hero"
                 >
                   Location
-                </a>
-                <a
-                  className="rounded-xl px-4 py-1 cursor-pointer transform hover:text-slate-800 hover:bg-[#4ade80] transition"
-                  href="#contact"
-                >
-                  Contact
                 </a>
               </nav>
             </div>
@@ -546,16 +529,13 @@ const HomePage = () => {
               </button>
               {/* Carousel Slides */}
               <div className="w-full h-full flex items-center justify-center overflow-hidden relative">
-                {/* Previous slide (fading out, on top) */}
                 {prevSlide !== null && prevSlide !== currentSlide && (
                   <CarouselSlide
                     slide={carouselSlides[prevSlide]}
                     active={false}
-                    // z-30 and pointer-events-none for proper fade
                     className="z-30 pointer-events-none"
                   />
                 )}
-                {/* Current slide (fading in, below) */}
                 <CarouselSlide
                   slide={carouselSlides[currentSlide]}
                   active={true}
@@ -581,7 +561,7 @@ const HomePage = () => {
             ${
               idx === currentSlide
                 ? "bg-[#22c55e] scale-110 shadow"
-                : "bg-white"
+                : "bg-transparent"
             }
           `}
                     aria-label={`Go to slide ${idx + 1}`}
@@ -595,28 +575,72 @@ const HomePage = () => {
 
         <section
           id="location"
-          className="py-16 bg-brand-accent/10 min-h-[80vh] flex items-center"
+          className="pt-16 bg-brand-accent/10 h-[80vh] flex items-center"
         >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-semibold brand-primary">Location</h2>
-            <p className="mt-3 text-slate-800">
-              Placeholder for address and map.
-            </p>
+          <div className="w-6xl h-full mx-auto grid grid-cols-2 gap-8">
+            <div className="h-full flex flex-col justify-center items-start">
+              <span className="font-semibold text-[#22c55e]">Location</span>
+              <h2 className="font-bold text-3xl text-slate-800">
+                Where to Find Us?
+              </h2>
+              <p className="text-slate-600 mb-4 text-justify">
+                Our clinic is conveniently located at the heart of the Bon Dosco
+                Polytechnic Institute campus, making it easily accessible for
+                students, staff, and visitors.
+              </p>
+              <div className="w-full grid grid-cols-2 grid-rows-2 gap-4">
+                <div className="row-span-2 flex flex-col">
+                  <strong className="text-slate-600">
+                    <FontAwesomeIcon
+                      icon={faMapPin}
+                      className="w-6 h-6 text-[#22c55e]"
+                    />{" "}
+                    Address
+                  </strong>
+                  <p className="text-slate-500 text-justify">
+                    Estarossa Clinic, Building A, Bon Dosco Polytechnic
+                    Institute, 123 University Avenue, City of Dosconia, 4000
+                    Laguna, Philippines
+                  </p>
+                </div>
+                <div className="flex flex-col">
+                  <strong className="text-slate-600">
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className="w-6 h-6 text-[#22c55e]"
+                    />{" "}
+                    Telephone
+                  </strong>
+                  <p className="text-slate-500 text-justify">(049) 123-4567</p>
+                </div>
+                <div className="flex flex-col">
+                  <strong className="text-slate-600">
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="w-6 h-6 text-[#22c55e]"
+                    />{" "}
+                    Email Address
+                  </strong>
+                  <p className="text-slate-500 text-justify">
+                    estarossa.clinic@bdpi.edu.ph
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="h-full">
+              <iframe
+                title="Estarossa Clinic Location"
+                src="https://www.google.com/maps?q=14.5995,120.9842&z=16&output=embed"
+                width="100%"
+                height="100%"
+                className="w-full h-full rounded-2xl"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
         </section>
-
-        <section
-          id="contact"
-          className="py-16 bg-brand-accent/10 min-h-[80vh] flex items-center"
-        >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-semibold brand-primary">Contact</h2>
-            <p className="mt-3 text-slate-800">
-              Placeholder content for contact or support information.
-            </p>
-          </div>
-        </section>
-
         <section
           id="cta"
           className="py-16 bg-brand-solid text-white min-h-[80vh] flex items-center"
