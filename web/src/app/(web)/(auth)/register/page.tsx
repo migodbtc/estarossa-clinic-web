@@ -72,15 +72,7 @@ const RegisterPage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-3 mb-4">
-        <FontAwesomeIcon
-          icon={faUserPlus as IconProp}
-          size="2x"
-          className="text-slate-900"
-        />
-      </div>
-
-      <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">
+      <h1 className="text-lg font-bold text-slate-900 mb-1 text-center">
         {step === 1 && "Register Account"}
         {step === 2 && "Tell us about you"}
         {step === 3 && "More details"}
@@ -102,12 +94,12 @@ const RegisterPage = () => {
             <button
               type="button"
               onClick={next}
-              className="w-full py-3 text-lg rounded-2xl inline-flex items-center justify-center bg-slate-900 text-white font-semibold hover:bg-slate-800 transition"
+              className="w-full py-2 text-sm rounded-2xl inline-flex items-center justify-center bg-slate-900 text-white font-semibold hover:bg-slate-800 transition"
             >
               Get Started
             </button>
 
-            <div className="flex items-center gap-4 mt-2 mb-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gray-200" />
               <div className="text-sm text-slate-500">Or register with</div>
               <div className="flex-1 h-px bg-gray-200" />
