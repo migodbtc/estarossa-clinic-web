@@ -139,7 +139,7 @@ const RegisterPage = () => {
 
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-gray-200" />
-              <div className="text-sm text-slate-500">Or register with</div>
+              <div className="text-xs text-slate-500">Or register with</div>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
