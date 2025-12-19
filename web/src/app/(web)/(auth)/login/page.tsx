@@ -10,6 +10,7 @@ import {
   faEnvelope,
   faLock,
   faRightToBracket,
+  faSignIn,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -33,7 +34,8 @@ const LoginPage = () => {
   return (
     <>
       <h1 className="text-lg font-bold text-slate-900 text-center">
-        Login with email
+        <FontAwesomeIcon icon={faSignIn} className="text-[#22c55e] mr-3" />
+        Login with Email
       </h1>
       <p className="text-xs text-slate-600 mb-6 max-w-2xs text-center mx-auto">
         Sign in your registered account to access the Estarossa dashboard
@@ -89,11 +91,12 @@ const LoginPage = () => {
         {/* Large sign in button */}
         <button
           type="submit"
-          className="w-full py-2 text-sm rounded-xl inline-flex items-center justify-center bg-slate-900 text-white font-semibold transform hover:scale-105 hover:cursor-pointer transition"
+          className={`w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-1 bg-green-400 text-white text-lg font-semibold hover:bg-green-300 hover:scale-105 hover:cursor-pointer
+          transition disabled:opacity-60 disabled:cursor-not-allowed`}
         >
           <FontAwesomeIcon
             icon={faRightToBracket}
-            className="w-4 h-4 text-white mr-2"
+            className="w-4 h-4 text-white "
           />{" "}
           Sign In
         </button>
