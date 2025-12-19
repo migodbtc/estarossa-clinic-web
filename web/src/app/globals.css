@@ -154,6 +154,13 @@ body {
   background-repeat: no-repeat;
 }
 
+.bg-auth-layout {
+  background-image: url("/img/auth_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 /* Accessibility note:
   If you use gradients for text, ensure sufficient contrast or provide a solid color fallback (e.g. `.brand-primary`).
 */
