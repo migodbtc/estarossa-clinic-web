@@ -26,11 +26,14 @@ import {
   faFacebookF,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { toast } from "sonner";
 
 const RegisterPage: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [form, setForm] = useState({
     email: "",
+    password: "",
+    confirmPassword: "",
     firstName: "",
     middleName: "",
     lastName: "",
@@ -48,18 +51,48 @@ const RegisterPage: React.FC = () => {
   // check that all fields filled before advance
   const canAdvance = () => {
     if (step === 1) return true;
-    if (step === 2)
-      return form.email.trim() && form.firstName.trim() && form.lastName.trim();
-    if (step === 3)
-      return form.birthdate.trim() && form.sex.trim() && form.address.trim();
-    if (step === 4)
-      return form.contactNumber.trim() && form.agreePrivacy && form.agreeTerms;
+    if (step === 2) {
+      return (
+        form.email.trim() && form.password.trim() && form.confirmPassword.trim()
+      );
+    }
+    if (step === 3) {
+      return (
+        form.firstName.trim() &&
+        form.middleName.trim() &&
+        form.lastName.trim() &&
+        form.birthdate.trim()
+      );
+    }
+    if (step === 4) {
+      return (
+        form.sex.trim() &&
+        form.address.trim() &&
+        form.contactNumber.trim() &&
+        form.agreePrivacy &&
+        form.agreeTerms
+      );
+    }
     return false;
   };
 
   // helper funcs for form page navigation
-  const next = () => {
+  const next = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!canAdvance()) return;
+
+    if (step == 2) {
+      const passwordsIdentical = form.password === form.confirmPassword;
+      if (!passwordsIdentical) {
+        toast.error(
+          "Passwords within the registration form are not identical! Please recheck and try again..."
+        );
+        return;
+      }
+    }
+
+    if (step == 3) {
+    }
+
     setStep((s) => Math.min(4, s + 1));
   };
   const back = () => setStep((s) => Math.max(1, s - 1));
@@ -70,8 +103,6 @@ const RegisterPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canAdvance()) return;
-    // For now just log — integrate with API later
-    // eslint-disable-next-line no-console
     console.log("Register payload:", form);
     // router.push("/login");
   };
@@ -204,6 +235,53 @@ const RegisterPage: React.FC = () => {
             </div>
 
             <div className="flex flex-col gap-1">
+              <label htmlFor="email" className="text-xs text-slate-500">
+                Password
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
+                <FontAwesomeIcon
+                  icon={faEnvelope as IconProp}
+                  className="text-slate-500"
+                />
+                <input
+                  id="password"
+                  value={form.password}
+                  onChange={(e) => update("password", e.target.value)}
+                  type="password"
+                  placeholder="Password"
+                  className="flex-1 bg-transparent outline-none text-xs border-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label htmlFor="email" className="text-xs text-slate-500">
+                Confirm Password
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
+                <FontAwesomeIcon
+                  icon={faEnvelope as IconProp}
+                  className="text-slate-500"
+                />
+                <input
+                  id="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={(e) => update("confirmPassword", e.target.value)}
+                  type="password"
+                  placeholder="Confirm Password"
+                  className="flex-1 bg-transparent outline-none text-xs border-none"
+                  required
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Step 3: birthdate, sex, address */}
+        {step === 3 && (
+          <>
+            <div className="flex flex-col gap-1">
               <label htmlFor="firstName" className="text-xs text-slate-500">
                 First name
               </label>
@@ -264,55 +342,53 @@ const RegisterPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            <div className="flex-1 flex flex-col gap-1">
+              <label htmlFor="birthdate" className="text-xs text-slate-500">
+                Birthdate
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
+                <FontAwesomeIcon
+                  icon={faBirthdayCake as IconProp}
+                  className="text-slate-500"
+                />
+                <input
+                  id="birthdate"
+                  value={form.birthdate}
+                  onChange={(e) => update("birthdate", e.target.value)}
+                  type="date"
+                  className="flex-1 bg-transparent outline-none text-xs border-none"
+                  required
+                />
+              </div>
+            </div>
           </>
         )}
 
-        {/* Step 3: birthdate, sex, address */}
-        {step === 3 && (
+        {/* Step 4: contact + agreements */}
+        {step === 4 && (
           <>
-            <div className="flex gap-3">
-              <div className="flex-1 flex flex-col gap-1">
-                <label htmlFor="birthdate" className="text-xs text-slate-500">
-                  Birthdate
-                </label>
-                <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
-                  <FontAwesomeIcon
-                    icon={faBirthdayCake as IconProp}
-                    className="text-slate-500"
-                  />
-                  <input
-                    id="birthdate"
-                    value={form.birthdate}
-                    onChange={(e) => update("birthdate", e.target.value)}
-                    type="date"
-                    className="flex-1 bg-transparent outline-none text-xs border-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="flex-1 flex flex-col gap-1">
-                <label htmlFor="sex" className="text-xs text-slate-500">
-                  Sex
-                </label>
-                <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
-                  <FontAwesomeIcon
-                    icon={faVenusMars as IconProp}
-                    className="text-slate-500"
-                  />
-                  <select
-                    id="sex"
-                    value={form.sex}
-                    onChange={(e) => update("sex", e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-xs border-none"
-                    required
-                  >
-                    <option value="">Select sex</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+            <div className="flex-1 flex flex-col gap-1">
+              <label htmlFor="sex" className="text-xs text-slate-500">
+                Sex
+              </label>
+              <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
+                <FontAwesomeIcon
+                  icon={faVenusMars as IconProp}
+                  className="text-slate-500"
+                />
+                <select
+                  id="sex"
+                  value={form.sex}
+                  onChange={(e) => update("sex", e.target.value)}
+                  className="flex-1 bg-transparent outline-none text-xs border-none"
+                  required
+                >
+                  <option value="">Select sex</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
             </div>
 
@@ -320,6 +396,7 @@ const RegisterPage: React.FC = () => {
               <label htmlFor="address" className="text-xs text-slate-500">
                 Address
               </label>
+
               <div className="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-1">
                 <FontAwesomeIcon
                   icon={faLocationDot as IconProp}
@@ -336,12 +413,7 @@ const RegisterPage: React.FC = () => {
                 />
               </div>
             </div>
-          </>
-        )}
 
-        {/* Step 4: contact + agreements */}
-        {step === 4 && (
-          <>
             <div className="flex flex-col gap-1">
               <label htmlFor="contactNumber" className="text-xs text-slate-500">
                 Contact number
@@ -414,7 +486,7 @@ const RegisterPage: React.FC = () => {
             {step < 4 ? (
               <button
                 type="button"
-                onClick={next}
+                onClick={(e) => next(e)}
                 disabled={!canAdvance()}
                 className={`inline-flex items-center gap-2 rounded-xl px-4 py-1 bg-green-400 text-white text-sm font-semibold ${
                   canAdvance() &&

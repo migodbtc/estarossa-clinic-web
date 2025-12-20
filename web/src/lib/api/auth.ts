@@ -7,6 +7,10 @@ export async function login(
   return apiClient.post<LoginResponse, LoginRequest>("/api/login", creds);
 }
 
+// export async function register(
+//   creds: LoginRequest
+// )
+
 export function getStoredAccessToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("access_token");
