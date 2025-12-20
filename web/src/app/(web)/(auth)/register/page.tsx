@@ -27,7 +27,7 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 
-const RegisterPage = () => {
+const RegisterPage: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [form, setForm] = useState({
     email: "",
@@ -73,8 +73,7 @@ const RegisterPage = () => {
     // For now just log — integrate with API later
     // eslint-disable-next-line no-console
     console.log("Register payload:", form);
-    // Redirect to login after successful registration
-    router.push("/login");
+    // router.push("/login");
   };
 
   return (
