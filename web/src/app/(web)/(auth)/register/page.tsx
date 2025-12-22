@@ -121,9 +121,7 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     if (!canAdvance()) return;
 
-    // last checks done here
     if (form.contactNumber.length != 11) {
-      // Contact number if conditional to check current length of phone number if valid (11 is valid)
       toast.error("Please input a valid 12-digit phone number!");
       return;
     }
@@ -132,15 +130,29 @@ const RegisterPage: React.FC = () => {
       "Registration form has been submitted! Please wait for a few seconds for registration to be complete..."
     );
 
-    fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    }).then((res) => {
-      console.log("Done parsing data to the serverside");
-    });
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Show the error message from the backend
+        toast.error(data.message || "Registration failed.");
+        return;
+      }
+
+      // Success: show a success toast or redirect
+      toast.success(data.message || "Registration successful!");
+      // Optionally: router.push("/login");
+    } catch (err) {
+      toast.error("Network or server error. Please try again.");
+      console.error("Registration fetch error:", err);
+    }
   };
 
   return (
