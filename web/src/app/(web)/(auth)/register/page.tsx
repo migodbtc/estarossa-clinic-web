@@ -29,6 +29,8 @@ import {
 import { toast } from "sonner";
 
 const RegisterPage: React.FC = () => {
+  const router = useRouter();
+
   const [step, setStep] = useState<number>(1);
   const [form, setForm] = useState({
     email: "",
@@ -91,20 +93,54 @@ const RegisterPage: React.FC = () => {
     }
 
     if (step == 3) {
+      const currentDate = Number(Date.now().toString());
+      const birthdateConverted = Date.parse(form.birthdate);
+
+      if (birthdateConverted > currentDate) {
+        // Birthdate if conditional to register within allowed date range (not further than today)
+        toast.error("You can't register further than the current date!");
+        return;
+      }
+
+      const MINIMUM_AGE_REQUIREMENT = 410248800000; // user must be 13+
+      const minAllowedBirthDate = currentDate - MINIMUM_AGE_REQUIREMENT;
+      if (birthdateConverted >= minAllowedBirthDate) {
+        // Birthdate if conditional to check whether the user is 13 years old and above
+        toast.error(
+          "Only users 13 years old and above are allowed to register within the web application!"
+        );
+        return;
+      }
     }
 
     setStep((s) => Math.min(4, s + 1));
   };
   const back = () => setStep((s) => Math.max(1, s - 1));
 
-  // mandatory router for changing routes (ofc)
-  const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canAdvance()) return;
-    console.log("Register payload:", form);
-    // router.push("/login");
+
+    // last checks done here
+    if (form.contactNumber.length != 11) {
+      // Contact number if conditional to check current length of phone number if valid (11 is valid)
+      toast.error("Please input a valid 12-digit phone number!");
+      return;
+    }
+
+    toast.success(
+      "Registration form has been submitted! Please wait for a few seconds for registration to be complete..."
+    );
+
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    }).then((res) => {
+      console.log("Done parsing data to the serverside");
+    });
   };
 
   return (
