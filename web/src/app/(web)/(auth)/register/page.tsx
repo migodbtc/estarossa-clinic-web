@@ -141,14 +141,18 @@ const RegisterPage: React.FC = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        // Show the error message from the backend
-        toast.error(data.message || "Registration failed.");
+        // Try to show the most specific error message possible
+        toast.error(
+          data.message ||
+            data.error?.message ||
+            "Registration failed. Please try again."
+        );
         return;
       }
 
-      // Success: show a success toast or redirect
       toast.success(data.message || "Registration successful!");
       // Optionally: router.push("/login");
+      // Optionally: setForm({ ... }) to reset the form
     } catch (err) {
       toast.error("Network or server error. Please try again.");
       console.error("Registration fetch error:", err);

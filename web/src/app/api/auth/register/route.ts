@@ -6,10 +6,39 @@ export async function POST(request: NextRequest) {
     // Parse the incoming request body
     const data = await request.json();
 
-    // TODO: Implement your own registration logic here
-    // Example: validate data, check for existing user, save to DB, etc.
+    const api = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    // For now, just echo the received data for testing
+    const body = JSON.stringify(data);
+    console.log("Body Object");
+    console.log(body);
+
+    const response = await fetch(api + "/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: body,
+    });
+
+    const result = await response.json();
+
+    console.log("Result");
+    console.log(result);
+
+    // 'user already exists'
+    if (result.error == "user already exists") {
+      console.error("User already exists within the system!");
+      return NextResponse.json(
+        {
+          status: "error",
+          message:
+            "Server refused to connect! The service may be unavailable or down for maintenance.",
+        },
+        {
+          status: response.status,
+        }
+      );
+    }
+
+    // valid payload, ready to send to backend api
     return NextResponse.json(
       {
         status: "ok",
@@ -18,7 +47,23 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (err) {
+  } catch (err: any) {
+    // error == ECONNREFUSED
+    if (err?.cause?.code === "ECONNREFUSED") {
+      console.error("Flask API refused to connect to web application.");
+      return NextResponse.json(
+        {
+          status: "error",
+          message:
+            "Server refused to connect! The service may be unavailable or down for maintenance.",
+        },
+        {
+          status: 503,
+        }
+      );
+    }
+
+    // error == GENERIC
     console.error("Registration error: ", err);
     return NextResponse.json(
       { status: "error", message: "Registration failed!" },

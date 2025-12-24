@@ -23,7 +23,7 @@ def register():
     payload = request.get_json() or {}
     email = payload.get('email')
     password = payload.get('password')
-    role = payload.get('role', 'patient')
+    role = payload.get('role', 'patient') # expected to have no role anyways
 
     if not email or not password:
         return jsonify({'error': 'email and password are required'}), 400
@@ -45,12 +45,10 @@ def register():
     try:
         new_row = controller.get_by_id('auth_users', user_id)
         log_audit(user_id, 'auth_users', user_id, 'INSERT', None, new_row)
-    except Exception:
-        try:
-            utils._log("[auth][audit] failed to write audit for new user %s" % user_id)
-            traceback.print_exc()
-        except Exception:
-            pass
+    except Exception as e:
+        utils._log("[auth][audit] failed to write audit for new user %s" % user_id)
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 400
 
     return jsonify({'id': user_id}), 201
 
