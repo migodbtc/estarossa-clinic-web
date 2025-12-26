@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           status: "error",
-          message:
-            "Server refused to connect! The service may be unavailable or down for maintenance.",
+          message: "User already exists within the system!",
         },
         {
           status: response.status,
@@ -42,7 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         status: "ok",
-        message: "Registration endpoint hit. Implement logic here.",
+        message: "Registration successful! Redirecting to login page...",
         received: data,
       },
       { status: 200 }
