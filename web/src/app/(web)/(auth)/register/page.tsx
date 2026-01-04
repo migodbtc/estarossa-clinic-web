@@ -126,10 +126,6 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    toast.success(
-      "Registration form has been submitted! Please wait for a few seconds for registration to be complete..."
-    );
-
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",

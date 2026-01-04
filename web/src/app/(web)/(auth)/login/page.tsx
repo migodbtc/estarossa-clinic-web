@@ -18,6 +18,7 @@ import {
   faFacebookF,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { toast } from "sonner";
 // Layout is provided by the route `app/(web)/(auth)/layout.tsx` so don't import it here
 
 const LoginPage = () => {
@@ -25,10 +26,50 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // For now redirect to the dashboard after submit
-    router.push("/workspace");
+
+    // email & password must be something
+    if (!(email && password)) {
+      toast.error("Please enter both username and password!");
+      return;
+    }
+
+    toast.success(
+      "Login form has been submitted! Please wait for a few seconds for registration to be complete..."
+    );
+
+    const form = { email: email, password: password };
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Try to show the most specific error message possible
+        toast.error(
+          data.message ||
+            data.error?.message ||
+            "Login failed. Please try again."
+        );
+        return;
+      } else {
+        toast.success(data.message || "Registration successful!");
+        // setTimeout(() => {
+        //   router.push("/login");
+        // }, 2000);
+      }
+    } catch (err) {
+      toast.error("Network or server error. Please try again.");
+      console.error("Login fetch error:", err);
+    }
   };
 
   return (
