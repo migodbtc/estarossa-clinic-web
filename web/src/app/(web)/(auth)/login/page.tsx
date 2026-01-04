@@ -61,10 +61,10 @@ const LoginPage = () => {
         );
         return;
       } else {
-        toast.success(data.message || "Registration successful!");
-        // setTimeout(() => {
-        //   router.push("/login");
-        // }, 2000);
+        toast.success(data.message || "Login successful!");
+        setTimeout(() => {
+          router.push("/workspace");
+        }, 2000);
       }
     } catch (err) {
       toast.error("Network or server error. Please try again.");

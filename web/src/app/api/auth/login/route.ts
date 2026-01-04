@@ -15,12 +15,9 @@ export async function POST(request: NextRequest) {
     });
     const status = await response.status;
 
-    console.log("Result of the login request:");
-    console.log(await response);
-    console.log(`Status Code: ${status}`);
-
-    // error handling: errors come in this payload
-    // { error: 'invalid credentials' }
+    // console.log("Result of the login request:");
+    // console.log(await response);
+    // console.log(`Status Code: ${status}`);
 
     // invalid credentials (code 401)
     if (status == 401) {
