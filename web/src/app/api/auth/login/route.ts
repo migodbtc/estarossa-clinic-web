@@ -13,11 +13,10 @@ export async function POST(request: NextRequest) {
       headers: { "Content-Type": "application/json" },
       body: body,
     });
-    const result = await response.json();
     const status = await response.status;
 
     console.log("Result of the login request:");
-    console.log(result);
+    console.log(await response);
     console.log(`Status Code: ${status}`);
 
     // error handling: errors come in this payload
@@ -36,11 +35,21 @@ export async function POST(request: NextRequest) {
         }
       );
     }
+
+    // success case
+    return NextResponse.json(
+      {
+        status: "ok",
+        message: `Login successful! Welcome back to Estarossa!`,
+        received: data,
+      },
+      { status: 200 }
+    );
   } catch (err: any) {
     // generic catch statement
     console.error("Registration error: ", err);
     return NextResponse.json(
-      { status: "error", message: "Registration failed!" },
+      { status: "error", message: "Login failed!" },
       { status: 400 }
     );
   }

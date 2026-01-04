@@ -138,6 +138,8 @@ def login():
         path='/'
     )
 
+    return jsonify({"status": "ok"})
+
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True, locations=['cookies'])

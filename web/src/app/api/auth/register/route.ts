@@ -5,9 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse the incoming request body
     const data = await request.json();
-
     const api = process.env.NEXT_PUBLIC_API_BASE_URL;
-
     const body = JSON.stringify(data);
 
     const response = await fetch(api + "/auth/register", {
