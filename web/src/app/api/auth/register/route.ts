@@ -9,8 +9,6 @@ export async function POST(request: NextRequest) {
     const api = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const body = JSON.stringify(data);
-    console.log("Body Object");
-    console.log(body);
 
     const response = await fetch(api + "/auth/register", {
       method: "POST",
@@ -19,9 +17,6 @@ export async function POST(request: NextRequest) {
     });
 
     const result = await response.json();
-
-    console.log("Result");
-    console.log(result);
 
     // 'user already exists'
     if (result.error == "user already exists") {

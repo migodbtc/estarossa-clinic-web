@@ -25,6 +25,10 @@ def register():
     password = payload.get('password')
     role = payload.get('role', 'patient') # expected to have no role anyways
 
+    print("Payload details...")
+    print(payload)
+
+    # register to auth_users first
     if not email or not password:
         return jsonify({'error': 'email and password are required'}), 400
     if role not in ('patient', 'doctor', 'nurse', 'admin'):
@@ -39,6 +43,20 @@ def register():
         'email': email,
         'password_hash': pw_hash,
         'role': role,
+    })
+
+    # if successful, register to user_profiles
+
+    full_name = f"{payload.get('firstName')} {payload.get('middleName')} {payload.get('lastName')}"
+
+    profile_id = controller.create('user_profiles', {
+        'auth_id': user_id,
+        'full_name': full_name, 
+        'birthdate': payload.get("birthdate"), 
+        'sex': payload.get("sex"),
+        'address': payload.get("address"),
+        'contact_number': payload.get("contactNumber"),
+        'specialization': "None",
     })
 
     # write audit record: self-registration -> actor is the new user
