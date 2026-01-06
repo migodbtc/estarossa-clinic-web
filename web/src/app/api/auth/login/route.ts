@@ -2,31 +2,56 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // mandatory constants
     const data = await request.json();
     const api = process.env.NEXT_PUBLIC_API_BASE_URL;
     const body = JSON.stringify(data);
 
-    // do request to auth login route in flask api
     const response = await fetch(api + "/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body,
       credentials: "include",
     });
-    const status = await response.status;
 
-    // invalid credentials (code 401)
-    if (status == 401) {
-      console.error("Login form is provided with invalid credentials!");
+    const responseData = await response.json();
+    // Log results of response
+    console.log("Response Data:");
+    console.log(responseData);
+
+    const status = response.status;
+    let errorData = null;
+
+    // Try to parse error body if not OK
+    if (!response.ok) {
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = null;
+      }
+    }
+
+    if (status === 401) {
+      // Forward error from middleware or backend
       return NextResponse.json(
         {
           status: "error",
-          message: "Invalid login! Please check email address or password.",
+          message: errorData?.error || errorData?.message,
         },
+        { status: 401 }
+      );
+    }
+
+    if (!response.ok) {
+      // Forward other errors
+      return NextResponse.json(
         {
-          status: response.status,
-        }
+          status: "error",
+          message:
+            errorData?.error ||
+            errorData?.message ||
+            "Login failed. Please try again.",
+        },
+        { status }
       );
     }
 
@@ -47,8 +72,6 @@ export async function POST(request: NextRequest) {
 
     return nextResponse;
   } catch (err: any) {
-    // generic catch statement
-    console.error("Registration error: ", err);
     return NextResponse.json(
       { status: "error", message: "Login failed!" },
       { status: 400 }

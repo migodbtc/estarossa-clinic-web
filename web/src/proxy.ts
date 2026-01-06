@@ -16,7 +16,12 @@ export async function proxy(request: NextRequest) {
   // CSR routes: skip auth check for now
   const { pathname } = request.nextUrl;
   console.log(`Path Name: ${pathname}`);
-  if (pathname === "/login" || pathname === "/register") {
+  if (
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/api/auth/login" ||
+    pathname === "/api/auth/register"
+  ) {
     return NextResponse.next();
   }
 
@@ -25,8 +30,10 @@ export async function proxy(request: NextRequest) {
     // redirect to login if there is no user
     if (!token) {
       console.log("There is no existing token within the browser!");
-      return NextResponse.next();
-      // return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.json(
+        { error: "Unauthorized access, missing token" },
+        { status: 401 }
+      );
     }
 
     // additional validation if token = true
@@ -41,17 +48,19 @@ export async function proxy(request: NextRequest) {
       console.log(`Payload Expiration: ${exp}`);
       console.log(`Current Date: ${Math.floor(Date.now() / 1000)}`);
 
-      // // date validation
-      // if (exp && exp >= Math.floor(Date.now() / 1000)) {
-      //   return NextResponse.redirect(new URL("/login", request.url));
-      // }
+      // date validation
+      if (exp && exp < Math.floor(Date.now() / 1000)) {
+        return NextResponse.json(
+          { error: "Unauthorized access" },
+          { status: 401 }
+        );
+      }
     } catch (e) {
       console.log("Error in attempting to jwtVerify existing token!");
       return NextResponse.json(
         { error: "Unauthorized access" },
         { status: 401 }
       );
-      // return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 

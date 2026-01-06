@@ -160,7 +160,7 @@ def logout():
     # check if its a valid token by checking JWT identity authenticity
     # or so i think
     if not jti:
-        return jsonify({'error': 'invalid token'}), 400
+        return jsonify({'error': 'Invalid token'}), 400
 
 
     affected = revoke_jti(jti)

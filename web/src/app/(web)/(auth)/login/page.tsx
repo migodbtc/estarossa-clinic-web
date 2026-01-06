@@ -49,22 +49,24 @@ const LoginPage = () => {
         },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
-        // Try to show the most specific error message possible
-        toast.error(
-          data.message ||
-            data.error?.message ||
-            "Login failed. Please try again."
-        );
+        if (data.message?.toLowerCase().includes("token")) {
+          toast.error("An error has occured regarding a missing token!");
+        }
+
+        if (data.message?.toLowerCase().includes("invalid credentials")) {
+          toast.error(
+            "An error has occured because you have submitted invalid credentials!"
+          );
+        }
         return;
       } else {
-        toast.success(data.message || "Login successful!");
+        toast.success("Login successful! Welcome to Estarossa.");
         setTimeout(() => {
           router.push("/workspace");
-        }, 2000);
+        }, 500);
       }
     } catch (err) {
       toast.error("Network or server error. Please try again.");
