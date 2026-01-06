@@ -1,19 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPhone,
-  faCircleInfo,
-  faSignOutAlt,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import type {
-  AuthUser,
-  UserProfile,
-  Appointment,
-  MedicalRecord,
-} from "@/types/db/tables";
-import type { Role } from "@/types/db/enums";
+import React from "react";
 import { SidebarProvider } from "@/contexts/WorkspaceSidebarContext";
 import { MockUserProvider } from "@/contexts/MockUserContext";
 import WorkspaceSidebar from "@/components/WorkspaceSidebar";

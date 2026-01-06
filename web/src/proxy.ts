@@ -15,30 +15,44 @@ export async function proxy(request: NextRequest) {
 
   // CSR routes: skip auth check for now
   const { pathname } = request.nextUrl;
+  console.log(`Path Name: ${pathname}`);
   if (pathname === "/login" || pathname === "/register") {
     return NextResponse.next();
   }
 
-  // redirect to login if there is no user
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // additional validation if token = true
-  try {
-    const { payload } = await jwtVerify(
-      token,
-      new TextEncoder().encode("dev-secret-change-me")
-    );
-
-    const exp = payload.exp;
-
-    // date validation
-    if (exp && exp >= Math.floor(Date.now() / 1000)) {
-      return NextResponse.redirect(new URL("/login", request.url));
+  // API and/or workspace routes
+  if (pathname.startsWith("/api/") || pathname.startsWith("/workspace/")) {
+    // redirect to login if there is no user
+    if (!token) {
+      console.log("There is no existing token within the browser!");
+      return NextResponse.next();
+      // return NextResponse.redirect(new URL("/login", request.url));
     }
-  } catch (e) {
-    return NextResponse.redirect(new URL("/login", request.url));
+
+    // additional validation if token = true
+    try {
+      const { payload } = await jwtVerify(
+        token,
+        new TextEncoder().encode("dev-secret-change-me")
+      );
+
+      const exp = payload.exp;
+
+      console.log(`Payload Expiration: ${exp}`);
+      console.log(`Current Date: ${Math.floor(Date.now() / 1000)}`);
+
+      // // date validation
+      // if (exp && exp >= Math.floor(Date.now() / 1000)) {
+      //   return NextResponse.redirect(new URL("/login", request.url));
+      // }
+    } catch (e) {
+      console.log("Error in attempting to jwtVerify existing token!");
+      return NextResponse.json(
+        { error: "Unauthorized access" },
+        { status: 401 }
+      );
+      // return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
   return NextResponse.next();
