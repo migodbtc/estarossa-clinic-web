@@ -13,11 +13,8 @@ export async function POST(request: NextRequest) {
       headers: { "Content-Type": "application/json" },
       body: body,
     });
+    const response_data = await response.json();
     const status = await response.status;
-
-    // console.log("Result of the login request:");
-    // console.log(await response);
-    // console.log(`Status Code: ${status}`);
 
     // invalid credentials (code 401)
     if (status == 401) {
@@ -32,6 +29,11 @@ export async function POST(request: NextRequest) {
         }
       );
     }
+
+    console.log("Response headers!");
+    console.log(response.headers);
+    console.log("Response data's token!");
+    console.log(response_data.token);
 
     // success case
     return NextResponse.json(
