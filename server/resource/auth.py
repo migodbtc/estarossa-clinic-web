@@ -138,7 +138,7 @@ def login():
         path='/'
     )
 
-    return jsonify({"status": "ok"})
+    return resp
 
 
 @bp.route('/refresh', methods=['POST'])

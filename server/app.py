@@ -10,7 +10,7 @@ class FlaskApp:
             __name__
         )
         self.app.config.from_object(config_class)
-        CORS(self.app)
+        CORS(self.app, supports_credentials=True, origins=["http://localhost:3000"])
 
         self.mysql = MySQL()
         self.mysql.init_app(app=self.app)        

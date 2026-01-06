@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body,
+      credentials: "include",
     });
     const response_data = await response.json();
     const status = await response.status;
@@ -30,8 +31,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Response headers!");
-    console.log(response.headers);
+    console.log("Response!");
+    console.log(response);
     console.log("Response data's token!");
     console.log(response_data.token);
 
