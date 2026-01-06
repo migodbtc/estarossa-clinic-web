@@ -6,10 +6,34 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 
 const WorkspaceHeader = () => {
   const { toggle } = useSidebar();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error("Logout failed, please try again!");
+      } else {
+        toast.success("Logged out successfully!");
+        setTimeout(() => {
+          router.push("/login");
+        }, 500);
+      }
+    } catch (e) {
+      toast.error("Network error occured during logout!");
+    }
+  };
 
   return (
     <header className="w-full bg-white shadow-sm h-[10vh] border-2 border-b-slate-200">
@@ -46,6 +70,7 @@ const WorkspaceHeader = () => {
               aria-label="Sign out"
               title="Sign out"
               type="button"
+              onClick={handleLogout}
               className="inline-flex items-center justify-center w-10 h-10 rounded-md text-red-300 hover:text-red-600 hover:bg-red-50 hover:cursor-pointer"
             >
               <FontAwesomeIcon icon={faSignOutAlt} />
