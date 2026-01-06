@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
       body: body,
       credentials: "include",
     });
-    const response_data = await response.json();
     const status = await response.status;
 
     // invalid credentials (code 401)
@@ -31,13 +30,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Response!");
-    console.log(response);
-    console.log("Response data's token!");
-    console.log(response_data.token);
+    const setCookie = response.headers.get("set-cookie");
 
-    // success case
-    return NextResponse.json(
+    const nextResponse = NextResponse.json(
       {
         status: "ok",
         message: `Login successful! Welcome back to Estarossa!`,
@@ -45,6 +40,12 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
+
+    if (setCookie) {
+      nextResponse.headers.set("set-cookie", setCookie);
+    }
+
+    return nextResponse;
   } catch (err: any) {
     // generic catch statement
     console.error("Registration error: ", err);
