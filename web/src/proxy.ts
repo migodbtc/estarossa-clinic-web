@@ -34,7 +34,7 @@ export async function proxy(request: NextRequest) {
     const exp = payload.exp;
 
     // date validation
-    if (exp && exp <= Math.floor(Date.now() / 1000)) {
+    if (exp && exp >= Math.floor(Date.now() / 1000)) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   } catch (e) {
