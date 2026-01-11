@@ -635,3 +635,30 @@ export const mockAuditLog: AuditLog[] = [
     timestamp: "2025-11-21T04:09:00Z",
   },
 ];
+
+export const mockPatients = [
+  {
+    profile_id: 1,
+    full_name: "John Doe",
+    birthdate: "1990-01-01",
+    sex: "Male",
+    address: "123 Main St",
+    contact_number: "555-1234",
+  },
+  {
+    profile_id: 2,
+    full_name: "Jane Smith",
+    birthdate: "1985-05-12",
+    sex: "Female",
+    address: "456 Oak Ave",
+    contact_number: "555-5678",
+  },
+  {
+    profile_id: 3,
+    full_name: "Alex Johnson",
+    birthdate: "1978-09-23",
+    sex: "Other",
+    address: "789 Pine Rd",
+    contact_number: "555-9012",
+  },
+];

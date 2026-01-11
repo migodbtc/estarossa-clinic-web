@@ -1,9 +1,20 @@
 "use client";
 
 import WorkspaceTitle from "@/components/WorkspaceTitle";
+import { mockPatients } from "@/constants/mock";
 import { useMockUser } from "@/contexts/MockUserContext";
 import { Role } from "@/types/db/enums";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBirthdayCake,
+  faEllipsisH,
+  faIdBadge,
+  faMagnifyingGlass,
+  faMapMarkerAlt,
+  faPhone,
+  faUser,
+  faUserMd,
+  faVenusMars,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
@@ -56,9 +67,56 @@ export default function Page() {
           </button>
         </div>
       </div>
-      {/* ...rest of DoctorPatients content... */}
-      <div className="bg-white rounded-xl shadow p-4">
-        <p>Here you can view and manage your assigned patients.</p>
+      <div className="w-full overflow-x-auto ">
+        <table className="min-w-[900px] w-full text-left">
+          <thead>
+            <tr className="text-slate-400 text-xs font-semibold border-b-2 border-slate-200">
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faUser} className="mr-2" />
+                Name
+              </th>
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faBirthdayCake} className="mr-2" />
+                Birthdate
+              </th>
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faVenusMars} className="mr-2" />
+                Sex
+              </th>
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />
+                Address
+              </th>
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faPhone} className="mr-2" />
+                Contact
+              </th>
+              <th className="px-4 py-3">
+                <FontAwesomeIcon icon={faEllipsisH} className="mr-2" />
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {mockPatients.slice(0, entries).map((p) => (
+              <tr
+                key={p.profile_id}
+                className="bg-white even:bg-slate-50 text-sm text-slate-700"
+              >
+                <td className="px-4 py-2">{p.full_name}</td>
+                <td className="px-4 py-2">{p.birthdate}</td>
+                <td className="px-4 py-2">{p.sex}</td>
+                <td className="px-4 py-2">{p.address}</td>
+                <td className="px-4 py-2">{p.contact_number}</td>
+                <td className="px-4 py-2 text-center">
+                  <button className="p-2 rounded-full hover:bg-slate-200 transition hover:cursor-pointer">
+                    <FontAwesomeIcon icon={faEllipsisH} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
