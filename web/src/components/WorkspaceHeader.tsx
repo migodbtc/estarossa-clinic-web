@@ -22,6 +22,14 @@ const WorkspaceHeader = () => {
       });
       const data = await res.json();
 
+      if (res.status === 401) {
+        toast.info("You are already logged out.");
+        setTimeout(() => {
+          router.push("/login");
+        }, 500);
+        return;
+      }
+
       if (!res.ok) {
         toast.error("Logout failed, please try again!");
       } else {

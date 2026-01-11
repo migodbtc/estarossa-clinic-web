@@ -173,7 +173,7 @@ export default function WorkspaceSidebar({
 
   return (
     <aside
-      className={`bg-slate-700 text-white rounded transition-width duration-200 ease-in-out overflow-hidden shrink-0 ${
+      className={`bg-green-800 text-white rounded transition-width duration-200 ease-in-out overflow-hidden shrink-0 ${
         open ? "w-64" : "w-22"
       }`}
       style={{ minHeight: `100vh` }}

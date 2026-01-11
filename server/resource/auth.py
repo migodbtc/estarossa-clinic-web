@@ -154,6 +154,8 @@ def refresh():
 @bp.route('/logout', methods=['POST'])
 @jwt_required(refresh=True, locations=['cookies'])
 def logout():
+    print("Payload for /logout")
+    print(request.data)
     jwt_payload = get_jwt()
     jti = jwt_payload.get('jti')
 
