@@ -1,5 +1,6 @@
 "use client";
 
+import SexBadge from "@/components/ui/SexBadge";
 import WorkspaceTitle from "@/components/WorkspaceTitle";
 import { mockPatients } from "@/constants/mock";
 import { useMockUser } from "@/contexts/MockUserContext";
@@ -21,7 +22,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import page from "../page";
 
 export default function Page() {
   const { user: mockUserCtx } = useMockUser();
@@ -115,7 +115,9 @@ export default function Page() {
               >
                 <td className="px-4 py-2">{p.full_name}</td>
                 <td className="px-4 py-2">{p.birthdate}</td>
-                <td className="px-4 py-2">{p.sex}</td>
+                <td className="px-4 py-2">
+                  <SexBadge sex={p.sex} />
+                </td>
                 <td className="px-4 py-2">{p.address}</td>
                 <td className="px-4 py-2">{p.contact_number}</td>
                 <td className="px-4 py-2 text-center">
@@ -196,14 +198,14 @@ export default function Page() {
   );
 
   return (
-    <section className="w-full h-[75vh]">
+    <section className="w-full min-h-[75vh]">
       <WorkspaceTitle
         title="Patients"
         subtext="Patient directory and quick view."
         currentPage="Patients"
         currentHref="/workspace/patients"
       />
-      <main className="flex-1 p-2 row h-auto">
+      <main className="flex-1 p-2 row h-auto pb-16">
         {mockUserCtx.role === ("doctor" as Role) ? (
           <DoctorPatients />
         ) : mockUserCtx.role === ("nurse" as Role) ? (
