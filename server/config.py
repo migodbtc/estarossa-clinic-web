@@ -16,6 +16,7 @@ class FlaskConfig:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY', 'dev-secret-change-me'))
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=14)
+    JWT_REFRESH_COOKIE_NAME = "refresh_token_cookie"
 
     # Optional hooks for custom password hashing/verification. Set to callables
     # (e.g., in a test or app bootstrap) if you want to use a custom hasher.

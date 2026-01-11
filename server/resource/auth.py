@@ -124,7 +124,7 @@ def login():
 
     # setting a cookie + config properties like secure flag and samesite
     # specifically for the refresh token
-    cookie_name = current_app.config.get('JWT_REFRESH_COOKIE_NAME', 'refresh_token') # default name
+    cookie_name = current_app.config.get('JWT_REFRESH_COOKIE_NAME', 'refresh_token_cookie') # default name
     secure_flag = current_app.config.get('JWT_COOKIE_SECURE', False) # True or False
     samesite = current_app.config.get('JWT_COOKIE_SAMESITE', 'Lax') # Lax, Strict, None
 
@@ -156,6 +156,10 @@ def refresh():
 def logout():
     jwt_payload = get_jwt()
     jti = jwt_payload.get('jti')
+
+    current_app.logger.info(f"JWT_PAYLOAD & JTI")
+    current_app.logger.info(jwt_payload)
+    current_app.logger.info("\n" + jti)
     
     # check if its a valid token by checking JWT identity authenticity
     # or so i think

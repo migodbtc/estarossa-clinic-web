@@ -12,7 +12,8 @@ export async function proxy(request: NextRequest) {
   console.log("Proxy triggered!");
 
   const token = request.cookies.get("refresh_token_cookie")?.value;
-
+  console.log("Token");
+  console.log(token);
   // CSR routes: skip auth check for now
   const { pathname } = request.nextUrl;
   console.log(`Path Name: ${pathname}`);

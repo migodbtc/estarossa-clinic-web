@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     let errorData = null;
 
     // Try to parse error body if not OK
-    if (!response.ok) {
+    if (response.status < 200 || response.status >= 300) {
       try {
         errorData = await response.json();
       } catch {
@@ -35,20 +35,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           status: "error",
-          message: errorData?.error || errorData?.message,
+          message: responseData?.error || responseData?.message,
         },
         { status: 401 }
       );
     }
 
-    if (!response.ok) {
+    if (status < 200 || status >= 300) {
       // Forward other errors
       return NextResponse.json(
         {
           status: "error",
           message:
-            errorData?.error ||
-            errorData?.message ||
+            responseData?.error ||
+            responseData?.message ||
             "Login failed. Please try again.",
         },
         { status }
