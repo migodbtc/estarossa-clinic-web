@@ -5,6 +5,10 @@ import { mockPatients } from "@/constants/mock";
 import { useMockUser } from "@/contexts/MockUserContext";
 import { Role } from "@/types/db/enums";
 import {
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+  faAngleLeft,
+  faAngleRight,
   faBirthdayCake,
   faEllipsisH,
   faIdBadge,
@@ -17,11 +21,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import page from "../page";
 
 export default function Page() {
   const { user: mockUserCtx } = useMockUser();
   const [search, setSearch] = useState("");
   const [entries, setEntries] = useState(10);
+  const [page, setPage] = useState(1);
+
+  const totalEntries = mockPatients.length;
+  const totalPages = Math.ceil(totalEntries / entries);
 
   const DoctorPatients = () => (
     <div className="w-full">
@@ -67,6 +76,7 @@ export default function Page() {
           </button>
         </div>
       </div>
+      {/* Main table */}
       <div className="w-full overflow-x-auto ">
         <table className="min-w-[900px] w-full text-left">
           <thead>
@@ -118,8 +128,55 @@ export default function Page() {
           </tbody>
         </table>
       </div>
+      {/* Table controls + details */}
+      {/* Pagination row */}
+      <div className="flex w-full justify-between items-center mt-2 px-2">
+        {/* Displaying count */}
+        <div className="text-slate-500 text-sm font-medium">
+          Displaying {Math.min(entries, totalEntries)} out of {totalEntries}
+        </div>
+        {/* Pagination controls */}
+        <div className="flex items-center gap-2">
+          <button
+            className="rounded-xl  text-slate-500 px-3 py-1 transition hover:bg-slate-200 hover:text-slate-700 hover:cursor-pointer font-semibold"
+            onClick={() => setPage(1)}
+            disabled={page === 1}
+            aria-label="First page"
+          >
+            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+          </button>
+          <button
+            className="rounded-xl  text-slate-500 px-3 py-1 transition hover:bg-slate-200 hover:text-slate-700 hover:cursor-pointer font-semibold"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            aria-label="Previous page"
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </button>
+          <span className="px-3 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm">
+            {page}
+          </span>
+          <button
+            className="rounded-xl  text-slate-500 px-3 py-1 transition hover:bg-slate-200 hover:text-slate-700 hover:cursor-pointer font-semibold"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            aria-label="Next page"
+          >
+            <FontAwesomeIcon icon={faAngleRight} />
+          </button>
+          <button
+            className="rounded-xl  text-slate-500 px-3 py-1 transition hover:bg-slate-200 hover:text-slate-700 hover:cursor-pointer font-semibold"
+            onClick={() => setPage(totalPages)}
+            disabled={page === totalPages}
+            aria-label="Last page"
+          >
+            <FontAwesomeIcon icon={faAngleDoubleRight} />
+          </button>
+        </div>
+      </div>
     </div>
   );
+
   const NursePatients = () => (
     <div>
       <div className="bg-white rounded-xl shadow p-4">
