@@ -110,9 +110,11 @@ const SidebarLink = React.memo(
   ({ href, label, compact = false, isActive = false }: SidebarLinkProps) => {
     const icon = getIconForLabel(label);
     const baseClass = compact
-      ? "flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl bg-white hover:bg-[#22c55e] hover:text-white text-sm"
-      : "flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl bg-white hover:bg-[#22c55e] hover:text-white text-sm";
-    const activeClass = isActive ? "bg-green-400" : "";
+      ? "flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl text-sm"
+      : "flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl text-sm";
+    const activeClass = isActive
+      ? "bg-[#22c55e] text-white font-bold shadow"
+      : "bg-white text-[#22c55e] hover:bg-slate-200 hover:text-[#22c55e] transition";
 
     if (compact) {
       return (
@@ -187,7 +189,9 @@ export default function WorkspaceSidebar({
           </div>
           {open ? (
             <div>
-              <div className="text-lg font-semibold">Estarossa</div>
+              <div className="text-lg font-semibold text-slate-600">
+                Estarossa
+              </div>
             </div>
           ) : null}
         </div>
