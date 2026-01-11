@@ -110,11 +110,9 @@ const SidebarLink = React.memo(
   ({ href, label, compact = false, isActive = false }: SidebarLinkProps) => {
     const icon = getIconForLabel(label);
     const baseClass = compact
-      ? "flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl text-white bg-slate-600 text-sm"
-      : "flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 text-sm";
-    const activeClass = isActive
-      ? "border-2 border-slate-400 bg-slate-300"
-      : "";
+      ? "flex items-center gap-3 w-12 text-left px-3 py-2 rounded-xl bg-white hover:bg-[#22c55e] hover:text-white text-sm"
+      : "flex items-center gap-3 w-full text-left px-3 py-2 rounded-xl bg-white hover:bg-[#22c55e] hover:text-white text-sm";
+    const activeClass = isActive ? "bg-green-400" : "";
 
     if (compact) {
       return (
@@ -173,7 +171,7 @@ export default function WorkspaceSidebar({
 
   return (
     <aside
-      className={`bg-green-800 text-white rounded transition-width duration-200 ease-in-out overflow-hidden shrink-0 ${
+      className={`bg-white text-[#22c55e] rounded transition-width duration-200 ease-in-out overflow-hidden shrink-0 border-r-2 border-slate-200 ${
         open ? "w-64" : "w-22"
       }`}
       style={{ minHeight: `100vh` }}
@@ -181,11 +179,11 @@ export default function WorkspaceSidebar({
       <div className="w-64 p-4 pt-4 flex flex-col items-start gap-4">
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-full bg-slate-500 flex items-center justify-center text-xl font-semibold ${
+            className={`w-10 h-10 rounded-full bg-[#22c55e] text-green-800 flex items-center justify-center text-xl font-semibold ${
               open ? "" : "mx-auto"
             }`}
           >
-            <FontAwesomeIcon icon={faUserMd} />
+            <FontAwesomeIcon icon={faUserMd} className="text-white" />
           </div>
           {open ? (
             <div>
@@ -198,7 +196,7 @@ export default function WorkspaceSidebar({
           <nav aria-label="Sidebar" className="space-y-4">
             {Object.entries(sections).map(([sectionTitle, items]) => (
               <div key={sectionTitle} className="mb-4">
-                <div className="text-xs uppercase text-slate-300 font-semibold mb-2">
+                <div className="text-xs uppercase text-slate-400 font-semibold mb-2">
                   {open ? sectionTitle : `${sectionTitle.substring(0, 4)}...`}
                 </div>
                 <ul className="space-y-1">
